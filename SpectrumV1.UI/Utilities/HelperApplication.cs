@@ -4,14 +4,17 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraPrinting.Native.WebClientUIControl;
 using DevExpress.XtraSplashScreen;
+using SpectrumV1.DataLayers.Administration.Update;
 using SpectrumV1.Properties;
+using SpectrumV1.Update.Utilities;
+using SpectrumV1.Utilities.Enums;
+using SpectrumV1.Views.Main.Update;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
-using SpectrumV1.Utilities.Enums;
 
 namespace SpectrumV1.Utilities
 {
@@ -70,6 +73,128 @@ namespace SpectrumV1.Utilities
 				case PersonPrefix.Ms: return Resources.ContactTitleMs;
 			}
 			return string.Empty;
+		}
+
+		public static void CheckForUpdate()
+		{
+			// Called on MainForm_Load after successful login.
+			// If newer version available, display LiveUpdateForm so user can decide.
+			try
+			{
+				// Load settings (from DB or defaults)
+				var settings = LiveUpdateSettingsProvider.LoadOrDefault(Application.StartupPath);
+
+				// Determine current version (from settings override or executable version)
+				string processExe = settings.ProcessToEnd + ".exe";
+				string currentVersion = string.IsNullOrWhiteSpace(settings.CurrentVersionNo)
+					? GetExternalFileVersion(processExe)
+					: settings.CurrentVersionNo;
+
+				// Fetch update info (version.txt |pipe delimited| first field expected = version)
+				List<string> info = LiveUpdateHelper.GetUpdateInfo(
+					settings.UrlLink,
+					settings.VersionFilename,
+					Application.StartupPath + @"\",
+					0);
+
+				if (info == null || info.Count == 0) return; // Nothing retrieved
+
+				string availableVersion = info[0];
+
+				if (!IsNewerVersion(currentVersion, availableVersion)) return; // Up to date
+
+				// Show update dialog (user can choose to update). Using ShowDialog to block until decision.
+				using (var frm = new CheckForUpdateForm())
+				{
+					frm.ShowDialog();
+				}
+			}
+			catch (Exception ex)
+			{
+				// Swallow non-critical errors; optionally notify user silently.
+				System.Diagnostics.Debug.WriteLine("CheckForUpdate error: " + ex.Message);
+			}
+		}
+		public static void CheckForLiveUpdate()
+		{
+			// Silently update LiveUpdate.exe (the updater engine) if a newer version exists.
+			// Uses remote file 'live.version.txt' (pipe-delimited, first segment = version)
+			// Expected archive naming convention: LiveUpdate.<version>.zip containing new engine (optionally prefixed files).
+			try
+			{
+				var settings = LiveUpdateSettingsProvider.LoadOrDefault(Application.StartupPath);
+				string engineVersionFile = "live.version.txt"; // remote version descriptor for updater engine
+
+				// Current engine version
+				string currentEngineVersion = GetExternalFileVersion("LiveUpdate.exe");
+
+				// Fetch remote engine version info
+				List<string> info = LiveUpdateHelper.GetUpdateInfo(
+					settings.UrlLink,
+					engineVersionFile,
+					Application.StartupPath + @"\",
+					0);
+
+				if (info == null || info.Count == 0) return; // No info retrieved
+				string availableEngineVersion = info[0];
+
+				if (!IsNewerVersion(currentEngineVersion, availableEngineVersion)) return; // Already latest
+
+				// Build expected zip filename
+				string zipName = $"LiveUpdate.{availableEngineVersion}.zip";
+
+				// Download and unzip silently
+				LiveUpdateHelper.InstallUpdateNow(settings.UrlLink, zipName, Application.StartupPath + @"\", true);
+
+				// Rename any prefixed files to original names (e.g. V1234_LiveUpdate.exe -> LiveUpdate.exe)
+				LiveUpdateHelper.UpdateMe(settings.UpdaterPrefix, Application.StartupPath + @"\");
+
+				// Optional: verify and log
+				string newVersion = GetExternalFileVersion("LiveUpdate.exe");
+				System.Diagnostics.Debug.WriteLine($"LiveUpdate engine updated silently from {currentEngineVersion} to {newVersion}");
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine("Silent LiveUpdate engine update failed: " + ex.Message);
+			}
+		}
+
+		// Helper copied from LiveUpdateForm (public here for reuse)
+		private static bool IsNewerVersion(string current, string available)
+		{
+			if (Version.TryParse(current, out var cur) && Version.TryParse(available, out var avail))
+			{
+				return avail > cur;
+			}
+
+			// Fallback manual comparison
+			var curParts = current.Split('.');
+			var availParts = available.Split('.');
+			int max = Math.Max(curParts.Length, availParts.Length);
+			for (int i = 0; i < max; i++)
+			{
+				int curVal = i < curParts.Length && int.TryParse(curParts[i], out var c) ? c : 0;
+				int availVal = i < availParts.Length && int.TryParse(availParts[i], out var a) ? a : 0;
+				if (availVal > curVal) return true;
+				if (availVal < curVal) return false;
+			}
+			return false;
+		}
+
+		private static string GetExternalFileVersion(string fileName)
+		{
+			try
+			{
+				string fullPath = Path.Combine(Application.StartupPath, fileName);
+				if (!File.Exists(fullPath)) return "0.0.0.0";
+				var fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(fullPath);
+				string ver = !string.IsNullOrWhiteSpace(fvi.ProductVersion) ? fvi.ProductVersion : fvi.FileVersion;
+				return ver ?? "0.0.0.0";
+			}
+			catch
+			{
+				return "0.0.0.0";
+			}
 		}
 
 		public static bool CheckDatabaseConnection()

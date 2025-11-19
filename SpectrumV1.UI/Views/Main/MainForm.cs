@@ -1,7 +1,8 @@
 ﻿using DevExpress.XtraBars;
-using System.Windows.Forms;
 using SpectrumV1.Properties;
+using SpectrumV1.Utilities;
 using SpectrumV1.Views.Main.Update;
+using System.Windows.Forms;
 
 namespace SpectrumV1.Views.Main
 {
@@ -32,6 +33,10 @@ namespace SpectrumV1.Views.Main
 			UpdateStatus();
 
 			_logOut = true;
+		}
+		private void MainForm_Load(object sender, System.EventArgs e)
+		{
+			HelperApplication.CheckForUpdate();
 		}
 
 		#region Loading Region
@@ -114,6 +119,7 @@ namespace SpectrumV1.Views.Main
 		}
 
 		#endregion
+
 
 	}
 }

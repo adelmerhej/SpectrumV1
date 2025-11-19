@@ -1,0 +1,89 @@
+﻿using System;
+using MongoDB.Bson;
+using MongoDB.Driver;
+
+namespace SpectrumV1.DataLayers.DataUtilities
+{
+	public static class ConnectionHelper
+	{
+		private static readonly object _syncRoot = new object();
+		private static MongoClient _cachedClient;
+		private static string _cachedClientKey;
+
+		/// <summary>
+		/// Creates (and caches) a Mongo client for the given connection parameters.
+		/// Default host is "mongodb://localhost:27017/".
+		/// If username and password are provided, credential-based authentication is used (default auth DB = "admin").
+		/// </summary>
+		/// <param name="host">MongoDB connection string or host (e.g., "mongodb://localhost:27017/").</param>
+		/// <param name="username">Optional username.</param>
+		/// <param name="password">Optional password.</param>
+		/// <param name="authDatabase">Authentication database name. Defaults to "admin".</param>
+		/// <returns>Mongo client instance.</returns>
+		public static MongoClient GetClient(string host = "mongodb://localhost:27017/", string username = null, string password = null, string authDatabase = "admin")
+		{
+			var key = BuildClientKey(host, username, password, authDatabase);
+
+			if (_cachedClient != null && string.Equals(_cachedClientKey, key, StringComparison.Ordinal))
+				return _cachedClient;
+
+			lock (_syncRoot)
+			{
+				if (_cachedClient != null && string.Equals(_cachedClientKey, key, StringComparison.Ordinal))
+					return _cachedClient;
+
+				MongoClient client;
+				var mongoUrl = new MongoUrl(host);
+
+				if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+				{
+					var settings = MongoClientSettings.FromUrl(mongoUrl);
+					settings.Credential = MongoCredential.CreateCredential(string.IsNullOrEmpty(authDatabase) ? "admin" : authDatabase, username, password);
+					client = new MongoClient(settings);
+				}
+				else
+				{
+					client = new MongoClient(mongoUrl);
+				}
+
+				_cachedClient = client;
+				_cachedClientKey = key;
+				return client;
+			}
+		}
+
+		/// <summary>
+		/// Gets a database reference using the provided client parameters.
+		/// </summary>
+		public static IMongoDatabase GetDatabase(string databaseName, string host = "mongodb://localhost:27017/", string username = null, string password = null, string authDatabase = "admin")
+		{
+			if (string.IsNullOrWhiteSpace(databaseName))
+				throw new ArgumentException("Database name must be provided.", nameof(databaseName));
+
+			var client = GetClient(host, username, password, authDatabase);
+			return ((MongoClient)client).GetDatabase(databaseName);
+		}
+
+		/// <summary>
+		/// Pings the MongoDB server to verify connectivity.
+		/// </summary>
+		public static bool TryPing(MongoClient client, string databaseName = "admin")
+		{
+			try
+			{
+				var db = client.GetDatabase(string.IsNullOrEmpty(databaseName) ? "admin" : databaseName);
+				db.RunCommand<BsonDocument>(new BsonDocument("ping", 1));
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		private static string BuildClientKey(string host, string username, string password, string authDb)
+		{
+			return $"{host}|{username}|{(string.IsNullOrEmpty(password) ? string.Empty : "***")}|{authDb}";
+		}
+	}
+}

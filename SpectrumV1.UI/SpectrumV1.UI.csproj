@@ -79,12 +79,6 @@
     <Compile Include="Views\Main\Update\CheckForUpdateForm.Designer.cs">
       <DependentUpon>CheckForUpdateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Main\Update\LiveUpdateForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Main\Update\LiveUpdateForm.Designer.cs">
-      <DependentUpon>LiveUpdateForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\Main\WaitForm1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,9 +103,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Main\Update\CheckForUpdateForm.resx">
       <DependentUpon>CheckForUpdateForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\Main\Update\LiveUpdateForm.resx">
-      <DependentUpon>LiveUpdateForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Main\WaitForm1.resx">
       <DependentUpon>WaitForm1.cs</DependentUpon>
@@ -187,6 +178,14 @@
     <Folder Include="Utilities\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SpectrumV1.DataLayers\SpectrumV1.DataLayers.csproj">
+      <Project>{c358f497-16b5-42ca-8c46-6fead2528018}</Project>
+      <Name>SpectrumV1.DataLayers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpectrumV1.Models\SpectrumV1.Models.csproj">
+      <Project>{2dd2c5d0-7eae-44aa-aaf5-409141391579}</Project>
+      <Name>SpectrumV1.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpectrumV1.Update\SpectrumV1.Update.csproj">
       <Project>{d9750722-a1ed-4646-9e6e-2ac0a20e1b05}</Project>
       <Name>SpectrumV1.Update</Name>

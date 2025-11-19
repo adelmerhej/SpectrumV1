@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SSM V1")]
-[assembly: AssemblyDescription("Spectrum Software Management First Version V1 (SSM V1)")]
+[assembly: AssemblyTitle("SpectrumV1.DataLayers")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Vision^n")]
-[assembly: AssemblyProduct("Spectrum Software Management V1")]
-[assembly: AssemblyCopyright("Copyright © Vision^n 2026")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("SpectrumV1.DataLayers")]
+[assembly: AssemblyCopyright("Copyright ©  2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("64964bf9-6ce6-4240-9747-5d89397500fd")]
+[assembly: Guid("c358f497-16b5-42ca-8c46-6fead2528018")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("4.7.2.1")]
-[assembly: AssemblyFileVersion("1.0.1.6")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

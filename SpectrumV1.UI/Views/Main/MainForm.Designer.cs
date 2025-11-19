@@ -49,8 +49,10 @@
 			this.statusDate = new DevExpress.XtraBars.BarStaticItem();
 			this.skinRibbonGalleryBarItem1 = new DevExpress.XtraBars.SkinRibbonGalleryBarItem();
 			this.skinPaletteRibbonGalleryBarItem1 = new DevExpress.XtraBars.SkinPaletteRibbonGalleryBarItem();
+			this.btnLiveUpdate = new DevExpress.XtraBars.BarButtonItem();
 			this.rpHome = new DevExpress.XtraBars.Ribbon.RibbonPage();
 			this.rpgDashboard = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+			this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
 			this.rpgAbout = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
 			this.rpgExit = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
 			this.rpgView = new DevExpress.XtraBars.Ribbon.RibbonPage();
@@ -58,8 +60,6 @@
 			this.rpgAppearance = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
 			this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
 			this.ribbonStatusBar1 = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
-			this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-			this.btnLiveUpdate = new DevExpress.XtraBars.BarButtonItem();
 			this.mainMenu = new DevExpress.XtraBars.Navigation.AccordionControl();
 			this.mnuNavigationMenu = new DevExpress.XtraBars.Navigation.AccordionControlElement();
 			this.mnuDashboard = new DevExpress.XtraBars.Navigation.AccordionControlElement();
@@ -306,6 +306,14 @@
 			this.skinPaletteRibbonGalleryBarItem1.Id = 84;
 			this.skinPaletteRibbonGalleryBarItem1.Name = "skinPaletteRibbonGalleryBarItem1";
 			// 
+			// btnLiveUpdate
+			// 
+			this.btnLiveUpdate.Caption = "Check for Update";
+			this.btnLiveUpdate.Id = 85;
+			this.btnLiveUpdate.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("btnLiveUpdate.ImageOptions.SvgImage")));
+			this.btnLiveUpdate.Name = "btnLiveUpdate";
+			this.btnLiveUpdate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnLiveUpdate_ItemClick);
+			// 
 			// rpHome
 			// 
 			this.rpHome.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
@@ -321,6 +329,13 @@
 			this.rpgDashboard.ItemLinks.Add(this.btnRefresh);
 			this.rpgDashboard.Name = "rpgDashboard";
 			this.rpgDashboard.Text = "Dashboard Refresh";
+			// 
+			// ribbonPageGroup2
+			// 
+			this.ribbonPageGroup2.Alignment = DevExpress.XtraBars.Ribbon.RibbonPageGroupAlignment.Far;
+			this.ribbonPageGroup2.ItemLinks.Add(this.btnLiveUpdate);
+			this.ribbonPageGroup2.Name = "ribbonPageGroup2";
+			this.ribbonPageGroup2.Text = "Live update";
 			// 
 			// rpgAbout
 			// 
@@ -371,21 +386,6 @@
 			this.ribbonStatusBar1.Name = "ribbonStatusBar1";
 			this.ribbonStatusBar1.Ribbon = this.ribbonMainForm;
 			this.ribbonStatusBar1.Size = new System.Drawing.Size(1441, 30);
-			// 
-			// ribbonPageGroup2
-			// 
-			this.ribbonPageGroup2.Alignment = DevExpress.XtraBars.Ribbon.RibbonPageGroupAlignment.Far;
-			this.ribbonPageGroup2.ItemLinks.Add(this.btnLiveUpdate);
-			this.ribbonPageGroup2.Name = "ribbonPageGroup2";
-			this.ribbonPageGroup2.Text = "Live update";
-			// 
-			// btnLiveUpdate
-			// 
-			this.btnLiveUpdate.Caption = "Check for Update";
-			this.btnLiveUpdate.Id = 85;
-			this.btnLiveUpdate.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("btnLiveUpdate.ImageOptions.SvgImage")));
-			this.btnLiveUpdate.Name = "btnLiveUpdate";
-			this.btnLiveUpdate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnLiveUpdate_ItemClick);
 			// 
 			// mainMenu
 			// 
@@ -1042,6 +1042,7 @@
 			this.StatusBar = this.ribbonStatusBar1;
 			this.Text = "Dashboard";
 			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			this.Load += new System.EventHandler(this.MainForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.ribbonMainForm)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.mainMenu)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.accordionSettings)).EndInit();

@@ -54,7 +54,7 @@
 			this.layoutControl2 = new DevExpress.XtraLayout.LayoutControl();
 			this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
 			this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-			this.XOLOGGroup = new DevExpress.XtraLayout.LayoutControlGroup();
+			this.AboutGroup = new DevExpress.XtraLayout.LayoutControlGroup();
 			this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
 			this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
 			this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -90,7 +90,7 @@
 			this.layoutControl2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.XOLOGGroup)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.AboutGroup)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
@@ -149,6 +149,7 @@
 			this.hypCompanyWebsite.Size = new System.Drawing.Size(332, 1);
 			this.hypCompanyWebsite.StyleController = this.layoutControl5;
 			this.hypCompanyWebsite.TabIndex = 4;
+			this.hypCompanyWebsite.Click += new System.EventHandler(this.hypCompanyWebsite_Click);
 			// 
 			// layoutControlGroup4
 			// 
@@ -361,6 +362,7 @@
 			// 
 			// pictureEdit1
 			// 
+			this.pictureEdit1.EditValue = global::SpectrumV1.Properties.Resources.sp_logo;
 			this.pictureEdit1.Location = new System.Drawing.Point(28, 54);
 			this.pictureEdit1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.pictureEdit1.Name = "pictureEdit1";
@@ -375,20 +377,20 @@
 			this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
 			this.layoutControlGroup1.GroupBordersVisible = false;
 			this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.XOLOGGroup});
+            this.AboutGroup});
 			this.layoutControlGroup1.Name = "layoutControlGroup1";
 			this.layoutControlGroup1.Size = new System.Drawing.Size(270, 535);
 			this.layoutControlGroup1.TextVisible = false;
 			// 
-			// XOLOGGroup
+			// AboutGroup
 			// 
-			this.XOLOGGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+			this.AboutGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem2,
             this.emptySpaceItem1});
-			this.XOLOGGroup.Location = new System.Drawing.Point(0, 0);
-			this.XOLOGGroup.Name = "XOLOGGroup";
-			this.XOLOGGroup.Size = new System.Drawing.Size(246, 511);
-			this.XOLOGGroup.Text = "XOLOG Logo";
+			this.AboutGroup.Location = new System.Drawing.Point(0, 0);
+			this.AboutGroup.Name = "AboutGroup";
+			this.AboutGroup.Size = new System.Drawing.Size(246, 511);
+			this.AboutGroup.Text = "Logo";
 			// 
 			// layoutControlItem2
 			// 
@@ -463,7 +465,7 @@
 			this.layoutControl2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.XOLOGGroup)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.AboutGroup)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
@@ -500,7 +502,7 @@
 		private DevExpress.XtraLayout.LayoutControl layoutControl2;
 		private DevExpress.XtraEditors.PictureEdit pictureEdit1;
 		private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-		private DevExpress.XtraLayout.LayoutControlGroup XOLOGGroup;
+		private DevExpress.XtraLayout.LayoutControlGroup AboutGroup;
 		private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
 		private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
 		private DevExpress.XtraLayout.LayoutControlGroup Root;

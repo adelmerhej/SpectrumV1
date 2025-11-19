@@ -95,6 +95,12 @@ namespace SpectrumV1
 
 				SplashScreenManager.ShowFluentSplashScreen(options, useFadeIn: true, useFadeOut: true);
 
+				//Check for application updates
+				options.RightFooter = "Finishing...";
+				SplashScreenManager.Default.SendCommand(FluentSplashScreenCommand.UpdateOptions, options);
+				HelperApplication.CheckForLiveUpdate();
+				await Task.Delay(200); // Simulate async delay
+
 				options.RightFooter = "Checking Database Connection...";
 				SplashScreenManager.Default.SendCommand(FluentSplashScreenCommand.UpdateOptions, options);
 				if (!await Task.Run(() => HelperApplication.CheckDatabaseConnection()))

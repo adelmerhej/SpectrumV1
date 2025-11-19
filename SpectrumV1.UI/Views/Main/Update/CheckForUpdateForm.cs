@@ -1,4 +1,6 @@
 ﻿using DevExpress.XtraEditors;
+using SpectrumV1.DataLayers.Administration.Update;
+using SpectrumV1.Models.Administration.Update;
 using SpectrumV1.Update.Utilities;
 using System;
 using System.Collections.Generic;
@@ -10,19 +12,7 @@ namespace SpectrumV1.Views.Main.Update
 {
 	public partial class CheckForUpdateForm : XtraForm
 	{
-		public const string UpdaterPrefix = "V1234_";
-		private static string _processToEnd = "SpectrumLive";
-		private static string _postProcess = Application.StartupPath + @"\" + _processToEnd + ".exe";
-		public static string Updater = Application.StartupPath + @"\LiveUpdate.exe";
-
-		public const string UpdateSuccess = "Spectrum has been successfully updated";
-		public const string UpdateCurrent = "No updates available for Spectrum Live";
-		public const string UpdateInfoError = "Error in retrieving Spectrum Live Update information";
-
-		private readonly string _urlLink = "https://www.xolog.com/u/liveupdate/specctrum/";
-		private readonly string _currentVersionNo = "";
-		private readonly string _newVersionNo = "";
-		private readonly string _versionFilename = "version.txt";
+		private LiveUpdateSettingsModel _settings;
 		private string _fileName = "";
 
 		public static List<string> Info = new List<string>();
@@ -32,62 +22,38 @@ namespace SpectrumV1.Views.Main.Update
 			InitializeComponent();
 		}
 
-		private void CheckForUpdateForm_Load(object sender, EventArgs e)
+		private void LiveUpdateForm_Load(object sender, EventArgs e)
 		{
-			txtDownloadUrl.Text = _urlLink;
+			// Load settings from DB (with safe defaults)
+			_settings = LiveUpdateSettingsProvider.LoadOrDefault(Application.StartupPath);
+
+			// Apply to UI
+			txtDownloadUrl.Text = _settings.UrlLink;
 			txtCurrentVersionNo.Text = GetExternalFileVersion("SpectrumLive.exe");
 			txtNewVersionNo.Text = "";
 
-			LiveUpdateHelper.UpdateMe(UpdaterPrefix, Application.StartupPath + @"\");
+			// Use settings
+			LiveUpdateHelper.UpdateMe(_settings.UpdaterPrefix, Application.StartupPath + @"\");
 			lblUpdateResult.Visible = false;
 			btnUpdate.Visible = false;
 			UnpackCommandline();
 			CheckForUpdate();
 		}
 
-		private void btnCheckForUpdate_Click(object sender, EventArgs e)
-		{
-			CheckForUpdate();
-		}
-
 		private void btnUpdate_Click(object sender, EventArgs e)
 		{
-			LiveUpdateHelper.InstallUpdateRestart(_urlLink, _fileName, "\"" + Application.StartupPath + "\\", _processToEnd, _postProcess, "updated", Updater);
+			LiveUpdateHelper.InstallUpdateRestart(
+				_settings.UrlLink,
+				_fileName,
+				"\"" + Application.StartupPath + "\\",
+				_settings.ProcessToEnd,
+				_settings.PostProcess,
+				"updated",
+				_settings.Updater);
+
 			Close();
 		}
 
-		private void CheckForUpdate()
-		{
-			Info = LiveUpdateHelper.GetUpdateInfo(txtDownloadUrl.Text, _versionFilename, Application.StartupPath + @"\", 0);
-
-			if (Info == null)
-			{
-				btnUpdate.Visible = false;
-				lblUpdateResult.Text = UpdateInfoError;
-				lblUpdateResult.Visible = true;
-			}
-			else
-			{
-				string currentVersion = _currentVersionNo;
-				string newerVersion = Info[0];
-				txtNewVersionNo.Text = Info[0];
-
-				if (IsNewerVersion(currentVersion, newerVersion))
-				{
-					btnUpdate.Visible = true;
-					lblUpdateResult.Visible = false;
-
-					_fileName = $"update.{newerVersion}.zip";
-				}
-				else
-				{
-					btnUpdate.Visible = false;
-					lblUpdateResult.Visible = true;
-					lblUpdateResult.Text = UpdateCurrent;
-				}
-			}
-		}
-		
 		// Get the version of an external file
 		private static string GetExternalFileVersion(string fileName)
 		{
@@ -113,7 +79,6 @@ namespace SpectrumV1.Views.Main.Update
 
 			foreach (string arg in Environment.GetCommandLineArgs())
 			{
-
 				if (!commandPresent)
 				{
 					commandPresent = arg.Trim().StartsWith("/");
@@ -130,7 +95,7 @@ namespace SpectrumV1.Views.Main.Update
 				if (tempStr.Remove(0, 2) == "updated")
 				{
 					lblUpdateResult.Visible = true;
-					lblUpdateResult.Text = UpdateSuccess;
+					lblUpdateResult.Text = _settings.UpdateSuccess;
 				}
 			}
 		}
@@ -155,6 +120,51 @@ namespace SpectrumV1.Views.Main.Update
 				if (availVal < curVal) return false;
 			}
 			return false; // equal
+		}
+
+		private void btnCheckForUpdate_Click(object sender, EventArgs e)
+		{
+			CheckForUpdate();
+		}
+
+		private void CheckForUpdate()
+		{
+			Info = LiveUpdateHelper.GetUpdateInfo(
+				_settings.UrlLink,
+				_settings.VersionFilename,
+				Application.StartupPath + @"\",
+				0);
+
+			if (Info == null)
+			{
+				btnUpdate.Visible = false;
+				lblUpdateResult.Text = _settings.UpdateInfoError;
+				lblUpdateResult.Visible = true;
+			}
+			else
+			{
+				// current version comes from settings if provided; otherwise from detected file version
+				string currentVersion = string.IsNullOrWhiteSpace(_settings.CurrentVersionNo)
+					? txtCurrentVersionNo.Text
+					: _settings.CurrentVersionNo;
+
+				string newerVersion = Info[0];
+				txtNewVersionNo.Text = Info[0];
+
+				if (IsNewerVersion(currentVersion, newerVersion))
+				{
+					btnUpdate.Visible = true;
+					lblUpdateResult.Visible = false;
+
+					_fileName = $"update.{newerVersion}.zip";
+				}
+				else
+				{
+					btnUpdate.Visible = false;
+					lblUpdateResult.Visible = true;
+					lblUpdateResult.Text = _settings.UpdateCurrent;
+				}
+			}
 		}
 	}
 }
