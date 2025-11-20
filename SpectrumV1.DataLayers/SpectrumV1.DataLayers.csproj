@@ -143,8 +143,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Administration\Update\LiveUpdateSettingsProvider.cs" />
+    <Compile Include="Common\Companies\BranchRepository.cs" />
+    <Compile Include="Common\Companies\CompanyRepository.cs" />
+    <Compile Include="Common\Forms\FormCategoryRepository.cs" />
+    <Compile Include="Common\Forms\FormRepository.cs" />
     <Compile Include="DataUtilities\ConnectionHelper.cs" />
+    <Compile Include="Projects\ContractDetailModel.cs" />
+    <Compile Include="Projects\ProjectDocumentsModel.cs" />
+    <Compile Include="Projects\ProjectModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Users\UserPermissionRepository.cs" />
+    <Compile Include="Users\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpectrumV1.Models\SpectrumV1.Models.csproj">

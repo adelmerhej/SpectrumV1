@@ -213,10 +213,10 @@
 			this.lblTitle.Appearance.Options.UseFont = true;
 			this.lblTitle.Location = new System.Drawing.Point(14, 24);
 			this.lblTitle.Name = "lblTitle";
-			this.lblTitle.Size = new System.Drawing.Size(562, 33);
+			this.lblTitle.Size = new System.Drawing.Size(402, 33);
 			this.lblTitle.StyleController = this.mainLayout;
 			this.lblTitle.TabIndex = 0;
-			this.lblTitle.Text = "Live update for Spectrum App Version 1.0";
+			this.lblTitle.Text = "Live update for Spectrum App";
 			// 
 			// Root
 			// 

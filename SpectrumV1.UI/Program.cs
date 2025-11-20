@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraSplashScreen;
 using SpectrumV1.Utilities;
+using SpectrumV1.Views.Users;
 
 namespace SpectrumV1
 {
@@ -56,14 +57,14 @@ namespace SpectrumV1
 					return;
 				}
 
-				//using (var loginForm = new LoginForm())
-				//{
-				//	if (loginForm.ShowDialog() == DialogResult.No)
-				//	{
-				//		Application.Exit();
-				//		return;
-				//	}
-				//}
+				using (var loginForm = new LoginForm())
+				{
+					if (loginForm.ShowDialog() == DialogResult.No)
+					{
+						Application.Exit();
+						return;
+					}
+				}
 
 				Thread.CurrentThread.Name = "ThreadMain";
 				Application.Run(new MainForm());
