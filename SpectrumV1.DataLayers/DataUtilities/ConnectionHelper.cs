@@ -81,6 +81,38 @@ namespace SpectrumV1.DataLayers.DataUtilities
 			}
 		}
 
+		/// <summary>
+		/// High-level convenience method to test connectivity given discrete params or a full connection string.
+		/// </summary>
+		public static bool TryConnect(string host, int port, string databaseName, string username, string password, string fullConn)
+		{
+			try
+			{
+				if (!string.IsNullOrWhiteSpace(fullConn))
+				{
+					var url = new MongoUrl(fullConn.Trim());
+					var client = GetClient(url.ToString());
+					var dbName = !string.IsNullOrWhiteSpace(databaseName) ? databaseName : (url.DatabaseName ?? "admin");
+					return TryPing(client, dbName);
+				}
+				else
+				{
+					string baseHost = string.IsNullOrWhiteSpace(host) ? "localhost" : host.Trim();
+					string mongoHost = $"mongodb://{baseHost}:{(port <= 0 ? 27017 : port)}/";
+					MongoClient client;
+					if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+						client = GetClient(mongoHost, username, password, "admin");
+					else
+						client = GetClient(mongoHost);
+					return TryPing(client, string.IsNullOrWhiteSpace(databaseName) ? "admin" : databaseName);
+				}
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
 		private static string BuildClientKey(string host, string username, string password, string authDb)
 		{
 			return $"{host}|{username}|{(string.IsNullOrEmpty(password) ? string.Empty : "***")}|{authDb}";

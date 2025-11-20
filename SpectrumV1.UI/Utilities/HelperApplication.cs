@@ -15,6 +15,8 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
+using SpectrumV1.DataLayers.DataUtilities; // added for MongoDB connection helper & DatabaseSettings
+using SpectrumV1.DataLayers.Properties;    // added for DB settings
 
 namespace SpectrumV1.Utilities
 {
@@ -199,7 +201,45 @@ namespace SpectrumV1.Utilities
 
 		public static bool CheckDatabaseConnection()
 		{
-			return true;
+			try
+			{
+				// Use public wrapper to access DataLayers settings
+				string host = DatabaseSettings.DatabaseHost;
+				int port = DatabaseSettings.DatabasePort;
+				string dbName = DatabaseSettings.DatabaseName;
+				string user = DatabaseSettings.DatabaseUser;
+				string pass = DatabaseSettings.DatabasePassword;
+				string fullConn = DatabaseSettings.MongoDbConfigString;
+
+				bool connected = ConnectionHelper.TryConnect(host, port, dbName, user, pass, fullConn);
+				if (connected) return true;
+
+				using (var frm = new MongoDbConnectionForm(host, port, dbName, user, pass, fullConn))
+				{
+					if (frm.ShowDialog() != DialogResult.OK)
+						return false;
+
+					DatabaseSettings.DatabaseHost = frm.Host;
+					DatabaseSettings.DatabasePort = frm.Port;
+					DatabaseSettings.DatabaseName = frm.DatabaseName;
+					DatabaseSettings.DatabaseUser = frm.Username;
+					DatabaseSettings.DatabasePassword = frm.Password;
+					DatabaseSettings.MongoDbConfigString = frm.ConnectionString ?? string.Empty;
+					DatabaseSettings.Save();
+				}
+
+				return ConnectionHelper.TryConnect(DatabaseSettings.DatabaseHost,
+					DatabaseSettings.DatabasePort,
+					DatabaseSettings.DatabaseName,
+					DatabaseSettings.DatabaseUser,
+					DatabaseSettings.DatabasePassword,
+					DatabaseSettings.MongoDbConfigString);
+			}
+			catch (Exception ex)
+			{
+				XtraMessageBox.Show("Database connection failed: " + ex.Message, "Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
 		}
 
 		public static void ApplyDefaultSettings()

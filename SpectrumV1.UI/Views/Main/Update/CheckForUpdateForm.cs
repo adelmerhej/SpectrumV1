@@ -1,6 +1,7 @@
 ﻿using DevExpress.XtraEditors;
 using SpectrumV1.DataLayers.Administration.Update;
 using SpectrumV1.Models.Administration.Update;
+using SpectrumV1.Properties;
 using SpectrumV1.Update.Utilities;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,8 @@ namespace SpectrumV1.Views.Main.Update
 		{
 			// Load settings from DB (with safe defaults)
 			_settings = LiveUpdateSettingsProvider.LoadOrDefault(Application.StartupPath);
+
+			lblTitle.Text = Settings.Default.ApplicationName;
 
 			// Apply to UI
 			txtDownloadUrl.Text = _settings.UrlLink;

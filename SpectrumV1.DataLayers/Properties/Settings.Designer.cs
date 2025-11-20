@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SpectrumV1.Properties {
+namespace SpectrumV1.DataLayers.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -25,169 +25,145 @@ namespace SpectrumV1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Spectrum Management Software")]
-        public string ApplicationName {
-            get {
-                return ((string)(this["ApplicationName"]));
-            }
-            set {
-                this["ApplicationName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ApplicationPalette {
-            get {
-                return ((string)(this["ApplicationPalette"]));
-            }
-            set {
-                this["ApplicationPalette"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ApplicationSkinName {
-            get {
-                return ((string)(this["ApplicationSkinName"]));
-            }
-            set {
-                this["ApplicationSkinName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool CompactUI {
-            get {
-                return ((bool)(this["CompactUI"]));
-            }
-            set {
-                this["CompactUI"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int CompanyId {
-            get {
-                return ((int)(this["CompanyId"]));
-            }
-            set {
-                this["CompanyId"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("EN")]
-        public string CurrentLanguage {
-            get {
-                return ((string)(this["CurrentLanguage"]));
-            }
-            set {
-                this["CurrentLanguage"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool DarkTheme {
-            get {
-                return ((bool)(this["DarkTheme"]));
-            }
-            set {
-                this["DarkTheme"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Palette {
-            get {
-                return ((string)(this["Palette"]));
-            }
-            set {
-                this["Palette"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SkinName {
-            get {
-                return ((string)(this["SkinName"]));
-            }
-            set {
-                this["SkinName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UpgradeRequired {
+        public bool SecureConnection {
             get {
-                return ((bool)(this["UpgradeRequired"]));
+                return ((bool)(this["SecureConnection"]));
             }
             set {
-                this["UpgradeRequired"] = value;
+                this["SecureConnection"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Admin")]
-        public string UserName {
+        [global::System.Configuration.DefaultSettingValueAttribute("44368")]
+        public int ApiPort {
             get {
-                return ((string)(this["UserName"]));
+                return ((int)(this["ApiPort"]));
             }
             set {
-                this["UserName"] = value;
+                this["ApiPort"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("admin")]
-        public string UserPassword {
+        [global::System.Configuration.DefaultSettingValueAttribute("3306")]
+        public int DatabasePort {
             get {
-                return ((string)(this["UserPassword"]));
+                return ((int)(this["DatabasePort"]));
             }
             set {
-                this["UserPassword"] = value;
+                this["DatabasePort"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SavePassword {
+        [global::System.Configuration.DefaultSettingValueAttribute("spectrumdb")]
+        public string DatabaseName {
             get {
-                return ((bool)(this["SavePassword"]));
+                return ((string)(this["DatabaseName"]));
             }
             set {
-                this["SavePassword"] = value;
+                this["DatabaseName"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Vision^")]
-        public string CompanyName {
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        public string DatabaseHost {
             get {
-                return ((string)(this["CompanyName"]));
+                return ((string)(this["DatabaseHost"]));
             }
             set {
-                this["CompanyName"] = value;
+                this["DatabaseHost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("root")]
+        public string DatabasePassword {
+            get {
+                return ((string)(this["DatabasePassword"]));
+            }
+            set {
+                this["DatabasePassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("root")]
+        public string DatabaseUser {
+            get {
+                return ((string)(this["DatabaseUser"]));
+            }
+            set {
+                this["DatabaseUser"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Error")]
+        public string LevelSqlLog {
+            get {
+                return ((string)(this["LevelSqlLog"]));
+            }
+            set {
+                this["LevelSqlLog"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        public string ApiUrl {
+            get {
+                return ((string)(this["ApiUrl"]));
+            }
+            set {
+                this["ApiUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("MongoDb")]
+        public string DatabaseType {
+            get {
+                return ((string)(this["DatabaseType"]));
+            }
+            set {
+                this["DatabaseType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Info")]
+        public string LevelAppLog {
+            get {
+                return ((string)(this["LevelAppLog"]));
+            }
+            set {
+                this["LevelAppLog"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MongoDbConfigString {
+            get {
+                return ((string)(this["MongoDbConfigString"]));
+            }
+            set {
+                this["MongoDbConfigString"] = value;
             }
         }
     }
