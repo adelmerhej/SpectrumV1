@@ -8,16 +8,16 @@ namespace SpectrumV1.Utilities
 		#region Update user activity log
 		public void CreateLogInfo<T>(T obj) where T : EntityObject
 		{
-			obj.CreatedBy = CurrentUser.UserId;
-			obj.CompanyId = CurrentUser.CompanyId;
-			if (CurrentUser.BranchId != null) obj.BranchId = (int)CurrentUser.BranchId;
+			obj.CreatedBy = CurrentUser.UserName;
+			obj.Company = CurrentUser.Company;
+			obj.Branch = CurrentUser.Branch;
 		}
 
 		public void UpdateLogInfo<T>(T obj) where T : EntityObject
 		{
-			obj.LastModifiedBy = CurrentUser.UserId;
-			obj.CompanyId = CurrentUser.CompanyId;
-			if (CurrentUser.BranchId != null) obj.BranchId = (int)CurrentUser.BranchId;
+			obj.LastModifiedBy = CurrentUser.UserName;
+			obj.Company = CurrentUser.Company;
+			obj.Branch = CurrentUser.Branch;
 		}
 
 		#endregion

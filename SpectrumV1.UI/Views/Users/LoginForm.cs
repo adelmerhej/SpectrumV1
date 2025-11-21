@@ -358,7 +358,7 @@ namespace SpectrumV1.Views.Users
 
 		private void cboCompanies_EditValueChanged(object sender, EventArgs e)
 		{
-			if (cboCompanies.EditValue != null) CurrentUser.CompanyId = (int)cboCompanies.EditValue;
+			if (cboCompanies.EditValue != null) CurrentUser.Company = cboCompanies.EditValue.ToString();
 		}
 
 

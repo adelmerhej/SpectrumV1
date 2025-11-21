@@ -1,12 +1,15 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using SpectrumV1.Models.Administration.Connections;
+using SpectrumV1.Models.Users;
 using SpectrumV1.Utilities.Enums;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpectrumV1.DataLayers.DataAccess.Types
 {
@@ -248,38 +251,76 @@ namespace SpectrumV1.DataLayers.DataAccess.Types
 			}
 		}
 
-		public override void CreateDatabase(string connectionString, string databaseName)
+		public override async Task CreateDatabase(string connectionString, string databaseName)
 		{
 			try
 			{
 				var client = new MongoClient(connectionString);
 				var database = client.GetDatabase(databaseName);
 
-				// Define the collection name
-				string collectionName = "Users";
+				// Use the strongly-typed class ApplicationUser
+				var usersCollection = database.GetCollection<UserModel>("Users");
 
-				// 1. Get a reference to the collection
-				var usersCollection = database.GetCollection<BsonDocument>(collectionName);
-
-				// 2. Define the index keys (e.g., index on the 'Email' field)
-				var indexKeys = Builders<BsonDocument>.IndexKeys.Ascending("Email");
-
-				// 3. Define the index options (e.g., enforce uniqueness)
+				// --- Step 1: Ensure Index is Created ---
+				// Indexes are crucial for performance and uniqueness constraints.
+				var indexKeys = Builders<UserModel>.IndexKeys.Ascending(u => u.Email);
 				var indexOptions = new CreateIndexOptions
 				{
 					Name = "EmailUniqueIndex",
-					Unique = true // This ensures no two documents have the same Email
+					Unique = true // Enforce that no two users can have the same email
 				};
 
-				// 4. Create the index using CreateIndexModel (recommended and non-obsolete)
-				var indexModel = new CreateIndexModel<BsonDocument>(indexKeys, indexOptions);
-				usersCollection.Indexes.CreateOne(indexModel);
+				// This is idempotent: it will only create the index if it doesn't exist.
+				await usersCollection.Indexes.CreateOneAsync(
+					new CreateIndexModel<UserModel>(
+						indexKeys,
+						indexOptions
+					)
+				);
 
-				Console.WriteLine($"Index 'EmailUniqueIndex' created/verified on collection '{collectionName}'.");
+				Console.WriteLine("Index 'EmailUniqueIndex' created/verified on Users collection.");
+
+				// --- Step 2: Check if Collection is Empty and Insert Default User ---
+
+				// Check the count. If it's 0, the collection is new or empty.
+				long userCount = await usersCollection.CountDocumentsAsync(new BsonDocument());
+
+				if (userCount == 0)
+				{
+					Console.WriteLine("Users collection is empty. Inserting default 'admin' user.");
+
+					// Create the default admin user document
+					var adminUser = new UserModel
+					{
+						Username = "admin",
+						Email = "admin@spectrum-lb.com",
+						PasswordHash = null, // Will be set/change on first login or via password setup
+						SecurityStamp = Guid.NewGuid().ToString(),
+						Roles = new List<string> { "admin" }, // Assign the admin role
+						IsLockedOut = false,
+						CreatedBy = "admin",
+						CreatedAt = DateTime.UtcNow
+					};
+
+					// Insert the document
+					await usersCollection.InsertOneAsync(adminUser);
+
+					Console.WriteLine("Default 'admin' user inserted successfully.");
+				}
+				else
+				{
+					Console.WriteLine($"Users collection contains {userCount} documents. Skipping default user creation.");
+				}
+			}
+			catch (MongoWriteException ex) when (ex.WriteError.Code == 11000) // 11000 is duplicate key error
+			{
+				// This specifically catches the case where the index was created but a concurrent write
+				// tried to insert a user with a duplicate email.
+				Console.WriteLine("Default admin user may have been inserted by another process.");
 			}
 			catch (MongoException ex)
 			{
-				throw new InvalidOperationException("Failed to create index in MongoDB.", ex);
+				throw new InvalidOperationException("Failed to ensure collection and index in MongoDB.", ex);
 			}
 		}
 

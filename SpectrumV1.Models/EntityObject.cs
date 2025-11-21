@@ -13,18 +13,18 @@ namespace SpectrumV1.Models
 		[BsonId]
 		// [BsonRepresentation(BsonType.ObjectId)] tells the driver to handle this as a Mongo ObjectId
 		[BsonRepresentation(BsonType.ObjectId)]
-		public string Id { get; set; }
+		public string _id { get; set; }
 
 		public string Notes { get; set; }
-		public int CompanyId { get; set; }
-		public int BranchId { get; set; }
-		public int CreatedBy { get; set; }
+		public string Company { get; set; }
+		public string Branch { get; set; }
+		public string CreatedBy { get; set; }
 
 		// Use [BsonDateTimeOptions] to ensure consistent storage of UTC time
 		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
 		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-		public int LastModifiedBy { get; set; }
+		public string LastModifiedBy { get; set; }
 
 		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
 		public DateTime? LastModifiedDate { get; set; }

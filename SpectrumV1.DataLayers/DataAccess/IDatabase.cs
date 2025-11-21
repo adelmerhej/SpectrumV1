@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace SpectrumV1.DataLayers.DataAccess
 {
@@ -8,7 +9,7 @@ namespace SpectrumV1.DataLayers.DataAccess
 		bool AllowCreateDataBase();
 		ConnectionState CheckConnection();
 		bool CheckDatabaseExists(string connectionString, string databaseName);
-		void CreateDatabase(string connectionString, string databaseName);
+		Task CreateDatabase(string connectionString, string databaseName);
 		Configuration DatabaseConfiguration();
 	}
 }

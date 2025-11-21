@@ -321,20 +321,6 @@ namespace SpectrumV1.Utilities
 		}
 
 		/// <summary>
-		/// Handles critical errors during database connection
-		/// </summary>
-		private static bool HandleCriticalError(Exception ex)
-		{
-			SafeShowMessageBox(
-				$"A critical error occurred while connecting to the database:\n\n{ex.Message}\n\nPlease check your configuration and try again.",
-				"Critical Database Error",
-				MessageBoxButtons.OK,
-				MessageBoxIcon.Error);
-
-			return ShowServerConfigurationDialog();
-		}
-
-		/// <summary>
 		/// Shows server configuration dialog and returns success status
 		/// </summary>
 		private static bool ShowServerConfigurationDialog()
