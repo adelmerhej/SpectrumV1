@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -12,20 +9,32 @@ namespace SpectrumV1.Models
 {
 	public class EntityObject : INotifyPropertyChanging, INotifyPropertyChanged
 	{
-		public int Id { get; set; }
+		// [BsonId] maps this property to the MongoDB primary key '_id'
+		[BsonId]
+		// [BsonRepresentation(BsonType.ObjectId)] tells the driver to handle this as a Mongo ObjectId
+		[BsonRepresentation(BsonType.ObjectId)]
+		public string Id { get; set; }
+
 		public string Notes { get; set; }
 		public int CompanyId { get; set; }
 		public int BranchId { get; set; }
 		public int CreatedBy { get; set; }
-		public DateTime CreatedDate { get; set; }
+
+		// Use [BsonDateTimeOptions] to ensure consistent storage of UTC time
+		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+		public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
 		public int LastModifiedBy { get; set; }
+
+		[BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
 		public DateTime? LastModifiedDate { get; set; }
-		public int WorkingYear { get; set; }
-		public bool IsProtected { get; set; }
-		public bool IsDefault { get; set; }
-		public bool Active { get; set; }
-		public bool Locked { get; set; }
-		public bool Deleted { get; set; }
+
+		public int WorkingYear { get; set; } = DateTime.UtcNow.Year;
+		public bool IsProtected { get; set; } = false;
+		public bool IsDefault { get; set; } = false;
+		public bool Active { get; set; } = true;
+		public bool Locked { get; set; } = false;
+		public bool Deleted { get; set; } = false;
 
 
 		private static PropertyChangingEventArgs _emptyChangingEventArgs = new PropertyChangingEventArgs(string.Empty);

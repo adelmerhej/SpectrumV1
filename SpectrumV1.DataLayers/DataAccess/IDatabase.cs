@@ -7,8 +7,8 @@ namespace SpectrumV1.DataLayers.DataAccess
 	{
 		bool AllowCreateDataBase();
 		ConnectionState CheckConnection();
-		bool CheckDatabaseExists(string databaseName);
-		void CreateDatabase(string databaseName);
+		bool CheckDatabaseExists(string connectionString, string databaseName);
+		void CreateDatabase(string connectionString, string databaseName);
 		Configuration DatabaseConfiguration();
 	}
 }

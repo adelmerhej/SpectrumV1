@@ -15,9 +15,9 @@ namespace SpectrumV1.DataLayers.DataAccess
 			return state;
 		}
 
-		public abstract bool CheckDatabaseExists(string databaseName);
+		public abstract bool CheckDatabaseExists(string connectionString, string databaseName);
 
-		public virtual void CreateDatabase(string databaseName)
+		public virtual void CreateDatabase(string connectionString, string databaseName)
 		{
 
 		}

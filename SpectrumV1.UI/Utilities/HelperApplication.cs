@@ -182,53 +182,64 @@ namespace SpectrumV1.Utilities
 		#region Database Connection
 		public static bool CheckDatabaseConnection()
 		{
-			const int maxRetryAttempts = 3;
-			int currentAttempt = 0;
-
+			// Keep attempting connection; if configuration or failure occurs, loop showing configuration form until user cancels.
 			while (true)
 			{
-				try
+				var connectionResult = AttemptDatabaseConnection();
+				switch (connectionResult.Status)
 				{
-					currentAttempt++;
-					var connectionResult = AttemptDatabaseConnection();
+					case DatabaseConnectionStatus.Success:
+						return true;
 
-					switch (connectionResult.Status)
-					{
-						case DatabaseConnectionStatus.Success:
-							return true;
+					case DatabaseConnectionStatus.DatabaseNotFound:
+						if (HandleDatabaseNotFound(connectionResult.ConnectionModel))
+						{
+							continue; // try again after handling
+						}
+						return false;
 
-						case DatabaseConnectionStatus.DatabaseNotFound:
-							if (HandleDatabaseNotFound(connectionResult.ConnectionModel))
-								return CheckDatabaseConnection(); // Retry after database creation
-							return false;
+					case DatabaseConnectionStatus.ConfigurationRequired:
+					case DatabaseConnectionStatus.ConnectionFailed:
+						if (!ShowConfigurationLoop())
+							return false; // user cancelled
+						continue; // configuration updated; re-attempt
 
-						case DatabaseConnectionStatus.ConnectionFailed:
-							if (currentAttempt >= maxRetryAttempts)
-							{
-								return HandleConnectionFailure();
-							}
-							break;
-
-						case DatabaseConnectionStatus.ConfigurationRequired:
-							return HandleConfigurationRequired();
-
-						default:
-							return false;
-					}
-				}
-				catch (Exception ex)
-				{
-					if (currentAttempt >= maxRetryAttempts)
-					{
-						return HandleCriticalError(ex);
-					}
-
-					// Log the error for debugging purposes
-					System.Diagnostics.Debug.WriteLine($"Database connection attempt {currentAttempt} failed: {ex.Message}");
+					default:
+						return false;
 				}
 			}
+		}
 
-			return false;
+		/// <summary>
+		/// Loop that keeps showing configuration dialog until user cancels or connection succeeds.
+		/// Returns true if configuration changed and connection now succeeds; false if user cancelled.
+		/// </summary>
+		private static bool ShowConfigurationLoop()
+		{
+			bool firstIteration = true;
+			while (true)
+			{
+				if (!firstIteration)
+				{
+					SafeShowMessageBox("Unable to connect with the supplied settings. Please adjust and try again.",
+						"Connection Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+					bool configured = ShowServerConfigurationDialog();
+					if (!configured) return false; // user cancelled
+				}
+				firstIteration = false;
+
+				var retryResult = AttemptDatabaseConnection();
+				if (retryResult.Status == DatabaseConnectionStatus.Success)
+					return true;
+				if (retryResult.Status == DatabaseConnectionStatus.DatabaseNotFound)
+				{
+					if (HandleDatabaseNotFound(retryResult.ConnectionModel))
+						continue; // database created; re-attempt
+					return false;
+				}
+				// Anything else loops again automatically.
+			}
 		}
 
 		/// <summary>
@@ -251,21 +262,23 @@ namespace SpectrumV1.Utilities
 				}
 
 				var database = DatabaseFactory.Get(connectionModel.DatabaseName, connectionModel.DatabaseType,
-								connectionModel.DatabaseHost, connectionModel.DatabasePort, connectionModel.DatabaseName,
-								connectionModel.DatabaseUser, connectionModel.DatabasePassword);
+												 connectionModel.DatabaseHost, connectionModel.DatabasePort, connectionModel.DatabaseName,
+												 connectionModel.DatabaseUser, connectionModel.DatabasePassword);
 
 				var connectionState = database.CheckConnection();
 
 				if (connectionState == ConnectionState.Open)
 				{
-					if (database.AllowCreateDataBase() && !database.CheckDatabaseExists(connectionModel.DatabaseName))
+					if (database.AllowCreateDataBase() && !database.CheckDatabaseExists(connectionModel.DatabaseConnectionString, connectionModel.DatabaseName))
 					{
-						return new DatabaseConnectionResult
-						{
-							Status = DatabaseConnectionStatus.DatabaseNotFound,
-							ConnectionModel = connectionModel,
-							Database = database
-						};
+						database.CreateDatabase(connectionModel.DatabaseConnectionString, connectionModel.DatabaseName);
+						
+						//return new DatabaseConnectionResult
+						//{
+						//	Status = DatabaseConnectionStatus.Success,
+						//	ConnectionModel = connectionModel,
+						//	Database = database
+						//};
 					}
 
 					// Update current user context on successful connection
@@ -302,38 +315,9 @@ namespace SpectrumV1.Utilities
 		/// </summary>
 		private static bool HandleDatabaseNotFound(ConnectionModel connectionModel)
 		{
-			var userChoice = SafeShowMessageBox($"The database '{connectionModel.DatabaseName}' could not be found.\n\nWould you like to create it?", 
-				"Database Not Found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-			return false;
-		}
-
-		/// <summary>
-		/// Handles connection failure by showing configuration dialog
-		/// </summary>
-		private static bool HandleConnectionFailure()
-		{
-			SafeShowMessageBox(
-				"Unable to connect to the database. Please check your connection settings.",
-				"Connection Failed",
-				MessageBoxButtons.OK,
-				MessageBoxIcon.Error);
-
-			return ShowServerConfigurationDialog();
-		}
-
-		/// <summary>
-		/// Handles configuration requirement by showing configuration dialog
-		/// </summary>
-		private static bool HandleConfigurationRequired()
-		{
-			SafeShowMessageBox(
-				"Database configuration is required. Please configure your database settings.",
-				"Configuration Required",
-				MessageBoxButtons.OK,
-				MessageBoxIcon.Warning);
-
-			return ShowServerConfigurationDialog();
+			var userChoice = SafeShowMessageBox($"The database '{connectionModel.DatabaseName}' could not be found.\n\nPlease create it or adjust settings.",
+				"Database Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			return false; // Placeholder: creation logic could be added here.
 		}
 
 		/// <summary>

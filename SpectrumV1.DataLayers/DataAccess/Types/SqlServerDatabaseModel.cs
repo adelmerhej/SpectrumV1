@@ -51,11 +51,11 @@ namespace SpectrumV1.DataLayers.DataAccess.Types
 
 		#region Overrides of AbstractDatabaseModel
 
-		public override bool CheckDatabaseExists(string databaseName)
+		public override bool CheckDatabaseExists(string connectionString, string databaseName)
 		{
 			bool databaseExists;
-			string connectionString = ConnectionHelper.BuildConnectionString(false);
-			using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+			string sqlConnectionString = ConnectionHelper.BuildConnectionString(false);
+			using (SqlConnection sqlConnection = new SqlConnection(sqlConnectionString))
 			{
 				sqlConnection.Open();
 				if (sqlConnection.State != ConnectionState.Open)

@@ -109,18 +109,6 @@ namespace SpectrumV1.DataLayers.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Error")]
-        public string LevelSqlLog {
-            get {
-                return ((string)(this["LevelSqlLog"]));
-            }
-            set {
-                this["LevelSqlLog"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
         public string ApiUrl {
             get {
@@ -140,18 +128,6 @@ namespace SpectrumV1.DataLayers.Properties {
             }
             set {
                 this["DatabaseType"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Info")]
-        public string LevelAppLog {
-            get {
-                return ((string)(this["LevelAppLog"]));
-            }
-            set {
-                this["LevelAppLog"] = value;
             }
         }
         

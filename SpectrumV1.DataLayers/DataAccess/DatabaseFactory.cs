@@ -68,7 +68,28 @@ namespace SpectrumV1.DataLayers.DataAccess
 			connection.DatabaseName = Settings.Default.DatabaseName;
 			connection.DatabaseUser = Settings.Default.DatabaseUser;
 			connection.DatabasePassword = Settings.Default.DatabasePassword;
+
 			connection.DatabaseConnectionString = Settings.Default.DatabaseConnectionString;
+
+			// If MongoDB and no explicit connection string, try to build one from parameters.
+			if (string.IsNullOrWhiteSpace(connection.DatabaseConnectionString) &&
+				!string.IsNullOrWhiteSpace(connection.DatabaseType) &&
+				string.Equals(connection.DatabaseType, DatabaseTypes.MongoDb.ToString(), StringComparison.OrdinalIgnoreCase))
+			{
+				var host = string.IsNullOrWhiteSpace(connection.DatabaseHost) ? "localhost" : connection.DatabaseHost.Trim();
+				var port = connection.DatabasePort > 0 ? connection.DatabasePort : 27017;
+
+				string userInfo = null;
+				if (!string.IsNullOrWhiteSpace(connection.DatabaseUser) && !string.IsNullOrWhiteSpace(connection.DatabasePassword))
+				{
+					userInfo = string.Concat(Uri.EscapeDataString(connection.DatabaseUser), ":", Uri.EscapeDataString(connection.DatabasePassword), "@");
+				}
+
+				string path = !string.IsNullOrWhiteSpace(connection.DatabaseName) ? "/" + connection.DatabaseName.Trim() : string.Empty;
+				string query = userInfo != null ? "?authSource=admin" : string.Empty;
+
+				connection.DatabaseConnectionString = $"mongodb://{(userInfo ?? string.Empty)}{host}:{port}{path}{query}";
+			}
 
 			return connection;
 		}

@@ -23,17 +23,11 @@
     <Setting Name="DatabaseUser" Type="System.String" Scope="User">
       <Value Profile="(Default)">root</Value>
     </Setting>
-    <Setting Name="LevelSqlLog" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Error</Value>
-    </Setting>
     <Setting Name="ApiUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">localhost</Value>
     </Setting>
     <Setting Name="DatabaseType" Type="System.String" Scope="User">
       <Value Profile="(Default)">MongoDb</Value>
-    </Setting>
-    <Setting Name="LevelAppLog" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Info</Value>
     </Setting>
     <Setting Name="DatabaseConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
