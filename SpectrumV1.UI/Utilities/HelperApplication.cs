@@ -1,25 +1,16 @@
-﻿using DevExpress.Utils;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Controls;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraSplashScreen;
+﻿using DevExpress.XtraEditors;
 using SpectrumV1.DataLayers.Administration.Update;
 using SpectrumV1.DataLayers.DataAccess;
-using SpectrumV1.DataLayers.DataUtilities; // added for MongoDB connection helper & DatabaseSettings
 using SpectrumV1.Models.Administration.Connections;
 using SpectrumV1.Models.Users;
-using SpectrumV1.Properties;
 using SpectrumV1.Update.Utilities;
-using SpectrumV1.Utilities.Enums;
-using SpectrumV1.Views.Main.Connections;    // added for DB settings
+using SpectrumV1.Views.Main.Connections;
 using SpectrumV1.Views.Main.Update;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace SpectrumV1.Utilities
 {

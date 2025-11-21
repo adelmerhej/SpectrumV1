@@ -5,7 +5,8 @@ namespace SpectrumV1.DataLayers.Projects
 {
 	// Embedded document for grouping links to physical files/folders
 	public class ProjectDocumentsModel
-	{ // Preliminary Handing Over
+	{ 
+		// Preliminary Handing Over
 		[BsonElement("PreliminaryHandoverLink")]
 		public string PreliminaryHandoverLink { get; set; }
 
