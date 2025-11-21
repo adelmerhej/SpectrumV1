@@ -147,6 +147,11 @@
     <Compile Include="Common\Companies\CompanyRepository.cs" />
     <Compile Include="Common\Forms\FormCategoryRepository.cs" />
     <Compile Include="Common\Forms\FormRepository.cs" />
+    <Compile Include="DataAccess\AbstractDatabaseModel.cs" />
+    <Compile Include="DataAccess\DatabaseFactory.cs" />
+    <Compile Include="DataAccess\IDatabase.cs" />
+    <Compile Include="DataAccess\Types\MongoDbDatabaseModel.cs" />
+    <Compile Include="DataAccess\Types\SqlServerDatabaseModel.cs" />
     <Compile Include="DataUtilities\ConnectionHelper.cs" />
     <Compile Include="DataUtilities\DatabaseSettings.cs" />
     <Compile Include="Projects\ContractDetailModel.cs" />
@@ -166,10 +171,12 @@
       <Project>{2dd2c5d0-7eae-44aa-aaf5-409141391579}</Project>
       <Name>SpectrumV1.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpectrumV1.Utilities\SpectrumV1.Utilities.csproj">
+      <Project>{9D7624DA-A00A-4D68-B72D-D432438D4E13}</Project>
+      <Name>SpectrumV1.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DataAccess\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

@@ -14,7 +14,7 @@ namespace SpectrumV1.DataLayers.DataUtilities
 		public static string DatabaseName { get => S.DatabaseName; set => S.DatabaseName = value; }
 		public static string DatabaseUser { get => S.DatabaseUser; set => S.DatabaseUser = value; }
 		public static string DatabasePassword { get => S.DatabasePassword; set => S.DatabasePassword = value; }
-		public static string MongoDbConfigString { get => S.MongoDbConfigString; set => S.MongoDbConfigString = value; }
+		public static string MongoDbConfigString { get => S.DatabaseConnectionString; set => S.DatabaseConnectionString = value; }
 		public static string DatabaseType { get => S.DatabaseType; set => S.DatabaseType = value; }
 
 		public static void Save() => S.Save();

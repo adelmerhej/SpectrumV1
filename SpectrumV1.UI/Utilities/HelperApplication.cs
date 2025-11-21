@@ -2,80 +2,56 @@
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraPrinting.Native.WebClientUIControl;
 using DevExpress.XtraSplashScreen;
 using SpectrumV1.DataLayers.Administration.Update;
+using SpectrumV1.DataLayers.DataAccess;
+using SpectrumV1.DataLayers.DataUtilities; // added for MongoDB connection helper & DatabaseSettings
+using SpectrumV1.Models.Administration.Connections;
+using SpectrumV1.Models.Users;
 using SpectrumV1.Properties;
 using SpectrumV1.Update.Utilities;
 using SpectrumV1.Utilities.Enums;
+using SpectrumV1.Views.Main.Connections;    // added for DB settings
 using SpectrumV1.Views.Main.Update;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
-using SpectrumV1.DataLayers.DataUtilities; // added for MongoDB connection helper & DatabaseSettings
-using SpectrumV1.DataLayers.Properties;    // added for DB settings
 
 namespace SpectrumV1.Utilities
 {
 	public static class HelperApplication
 	{
-		private static bool _changeDatabase = false;
+		#region Database Connection Result Types
 
-		public static void InitDefaultStyle()
+		/// <summary>
+		/// Represents the result of a database connection attempt
+		/// </summary>
+		private class DatabaseConnectionResult
 		{
-			WindowsFormsSettings.DefaultLookAndFeel.SetSkinStyle(Settings.Default.ApplicationSkinName, Settings.Default.ApplicationPalette);
-
-			//      WindowsFormsSettings.EnableFormSkins();
-			//         WindowsFormsSettings.ForceDirectXPaint();
-			////WindowsFormsSettings.DefaultLookAndFeel.SetSkinStyle(SkinStyle.Office2019Colorful);
-			////WindowsFormsSettings.DefaultRibbonStyle = DefaultRibbonControlStyle.Office2019;
-			//WindowsFormsSettings.FindPanelBehavior = FindPanelBehavior.Search;
-			//         WindowsFormsSettings.FilterCriteriaDisplayStyle = FilterCriteriaDisplayStyle.Visual;
-			//         //WindowsFormsSettings.AllowPixelScrolling = DefaultBoolean.True;
-			//         AppearanceObject.DefaultFont = new Font("Segoe UI", GetDefaultSize());
-
-			//         WindowsFormsSettings.ScrollUIMode = ScrollUIMode.Touch;
-			//         WindowsFormsSettings.CustomizationFormSnapMode = SnapMode.OwnerControl;
-			//         WindowsFormsSettings.ColumnFilterPopupMode = ColumnFilterPopupMode.Excel;
-			//         WindowsFormsSettings.AllowSkinEditorAttach = DefaultBoolean.True;
+			public DatabaseConnectionStatus Status { get; set; }
+			public ConnectionModel ConnectionModel { get; set; }
+			public IDatabase Database { get; set; }
+			public string ErrorMessage { get; set; }
 		}
 
-		public static float GetDefaultSize()
+		/// <summary>
+		/// Represents the status of a database connection attempt
+		/// </summary>
+		private enum DatabaseConnectionStatus
 		{
-			return 8.25F;
+			Success,
+			DatabaseNotFound,
+			ConnectionFailed,
+			ConfigurationRequired
 		}
 
-		public static void InitTitleComboBox(RepositoryItemImageComboBox edit)
-		{
-			var iCollection = new SvgImageCollection();
-			iCollection.Add(Resources.Doctor);
-			iCollection.Add(Resources.Miss);
-			iCollection.Add(Resources.Mr);
-			iCollection.Add(Resources.Mrs);
-			iCollection.Add(Resources.Ms);
-			iCollection.Add(Resources.Professor);
-			edit.Items.Add(new ImageComboBoxItem(GetTitleNameByContactTitle(PersonPrefix.Dr), PersonPrefix.Dr, 0));
-			edit.Items.Add(new ImageComboBoxItem(GetTitleNameByContactTitle(PersonPrefix.Miss), PersonPrefix.Miss, 1));
-			edit.Items.Add(new ImageComboBoxItem(GetTitleNameByContactTitle(PersonPrefix.Mr), PersonPrefix.Mr, 2));
-			edit.Items.Add(new ImageComboBoxItem(GetTitleNameByContactTitle(PersonPrefix.Mrs), PersonPrefix.Mrs, 3));
-			edit.Items.Add(new ImageComboBoxItem(GetTitleNameByContactTitle(PersonPrefix.Ms), PersonPrefix.Ms, 4));
-			edit.SmallImages = iCollection;
-		}
-		public static string GetTitleNameByContactTitle(PersonPrefix title)
-		{
-			switch (title)
-			{
-				case PersonPrefix.Dr: return Resources.ContactTitleDr;
-				case PersonPrefix.Miss: return Resources.ContactTitleMiss;
-				case PersonPrefix.Mr: return Resources.ContactTitleMr;
-				case PersonPrefix.Mrs: return Resources.ContactTitleMrs;
-				case PersonPrefix.Ms: return Resources.ContactTitleMs;
-			}
-			return string.Empty;
-		}
+		#endregion
+
+		#region Check for Application Update
 
 		public static void CheckForUpdate()
 		{
@@ -117,6 +93,7 @@ namespace SpectrumV1.Utilities
 				System.Diagnostics.Debug.WriteLine("CheckForUpdate error: " + ex.Message);
 			}
 		}
+
 		public static void CheckForLiveUpdate()
 		{
 			// Silently update LiveUpdate.exe (the updater engine) if a newer version exists.
@@ -198,315 +175,275 @@ namespace SpectrumV1.Utilities
 				return "0.0.0.0";
 			}
 		}
+		
+		#endregion
 
+
+		#region Database Connection
 		public static bool CheckDatabaseConnection()
+		{
+			const int maxRetryAttempts = 3;
+			int currentAttempt = 0;
+
+			while (true)
+			{
+				try
+				{
+					currentAttempt++;
+					var connectionResult = AttemptDatabaseConnection();
+
+					switch (connectionResult.Status)
+					{
+						case DatabaseConnectionStatus.Success:
+							return true;
+
+						case DatabaseConnectionStatus.DatabaseNotFound:
+							if (HandleDatabaseNotFound(connectionResult.ConnectionModel))
+								return CheckDatabaseConnection(); // Retry after database creation
+							return false;
+
+						case DatabaseConnectionStatus.ConnectionFailed:
+							if (currentAttempt >= maxRetryAttempts)
+							{
+								return HandleConnectionFailure();
+							}
+							break;
+
+						case DatabaseConnectionStatus.ConfigurationRequired:
+							return HandleConfigurationRequired();
+
+						default:
+							return false;
+					}
+				}
+				catch (Exception ex)
+				{
+					if (currentAttempt >= maxRetryAttempts)
+					{
+						return HandleCriticalError(ex);
+					}
+
+					// Log the error for debugging purposes
+					System.Diagnostics.Debug.WriteLine($"Database connection attempt {currentAttempt} failed: {ex.Message}");
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Attempts to establish database connection and returns detailed result
+		/// </summary>
+		private static DatabaseConnectionResult AttemptDatabaseConnection()
 		{
 			try
 			{
-				// Use public wrapper to access DataLayers settings
-				string host = DatabaseSettings.DatabaseHost;
-				int port = DatabaseSettings.DatabasePort;
-				string dbName = DatabaseSettings.DatabaseName;
-				string user = DatabaseSettings.DatabaseUser;
-				string pass = DatabaseSettings.DatabasePassword;
-				string fullConn = DatabaseSettings.MongoDbConfigString;
+				var connectionModel = DatabaseFactory.ConnectionParamsGet();
 
-				bool connected = ConnectionHelper.TryConnect(host, port, dbName, user, pass, fullConn);
-				if (connected) return true;
-
-				using (var frm = new MongoDbConnectionForm(host, port, dbName, user, pass, fullConn))
+				if (connectionModel == null || string.IsNullOrWhiteSpace(connectionModel.DatabaseHost))
 				{
-					if (frm.ShowDialog() != DialogResult.OK)
-						return false;
-
-					DatabaseSettings.DatabaseHost = frm.Host;
-					DatabaseSettings.DatabasePort = frm.Port;
-					DatabaseSettings.DatabaseName = frm.DatabaseName;
-					DatabaseSettings.DatabaseUser = frm.Username;
-					DatabaseSettings.DatabasePassword = frm.Password;
-					DatabaseSettings.MongoDbConfigString = frm.ConnectionString ?? string.Empty;
-					DatabaseSettings.Save();
+					return new DatabaseConnectionResult
+					{
+						Status = DatabaseConnectionStatus.ConfigurationRequired,
+						ConnectionModel = connectionModel,
+						ErrorMessage = "Database configuration is missing or invalid"
+					};
 				}
 
-				return ConnectionHelper.TryConnect(DatabaseSettings.DatabaseHost,
-					DatabaseSettings.DatabasePort,
-					DatabaseSettings.DatabaseName,
-					DatabaseSettings.DatabaseUser,
-					DatabaseSettings.DatabasePassword,
-					DatabaseSettings.MongoDbConfigString);
+				var database = DatabaseFactory.Get(connectionModel.DatabaseName, connectionModel.DatabaseType,
+								connectionModel.DatabaseHost, connectionModel.DatabasePort, connectionModel.DatabaseName,
+								connectionModel.DatabaseUser, connectionModel.DatabasePassword);
+
+				var connectionState = database.CheckConnection();
+
+				if (connectionState == ConnectionState.Open)
+				{
+					if (database.AllowCreateDataBase() && !database.CheckDatabaseExists(connectionModel.DatabaseName))
+					{
+						return new DatabaseConnectionResult
+						{
+							Status = DatabaseConnectionStatus.DatabaseNotFound,
+							ConnectionModel = connectionModel,
+							Database = database
+						};
+					}
+
+					// Update current user context on successful connection
+					UpdateUserContext(connectionModel);
+
+					return new DatabaseConnectionResult
+					{
+						Status = DatabaseConnectionStatus.Success,
+						ConnectionModel = connectionModel,
+						Database = database
+					};
+				}
+
+				return new DatabaseConnectionResult
+				{
+					Status = DatabaseConnectionStatus.ConnectionFailed,
+					ConnectionModel = connectionModel,
+					ErrorMessage = $"Connection failed. State: {connectionState}"
+				};
 			}
 			catch (Exception ex)
 			{
-				XtraMessageBox.Show("Database connection failed: " + ex.Message, "Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return new DatabaseConnectionResult
+				{
+					Status = DatabaseConnectionStatus.ConnectionFailed,
+					ConnectionModel = null,
+					ErrorMessage = $"Exception occurred: {ex.Message}"
+				};
+			}
+		}
+
+		/// <summary>
+		/// Handles the case when database is not found and prompts user for action
+		/// </summary>
+		private static bool HandleDatabaseNotFound(ConnectionModel connectionModel)
+		{
+			var userChoice = SafeShowMessageBox($"The database '{connectionModel.DatabaseName}' could not be found.\n\nWould you like to create it?", 
+				"Database Not Found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			return false;
+		}
+
+		/// <summary>
+		/// Handles connection failure by showing configuration dialog
+		/// </summary>
+		private static bool HandleConnectionFailure()
+		{
+			SafeShowMessageBox(
+				"Unable to connect to the database. Please check your connection settings.",
+				"Connection Failed",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Error);
+
+			return ShowServerConfigurationDialog();
+		}
+
+		/// <summary>
+		/// Handles configuration requirement by showing configuration dialog
+		/// </summary>
+		private static bool HandleConfigurationRequired()
+		{
+			SafeShowMessageBox(
+				"Database configuration is required. Please configure your database settings.",
+				"Configuration Required",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Warning);
+
+			return ShowServerConfigurationDialog();
+		}
+
+		/// <summary>
+		/// Handles critical errors during database connection
+		/// </summary>
+		private static bool HandleCriticalError(Exception ex)
+		{
+			SafeShowMessageBox(
+				$"A critical error occurred while connecting to the database:\n\n{ex.Message}\n\nPlease check your configuration and try again.",
+				"Critical Database Error",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Error);
+
+			return ShowServerConfigurationDialog();
+		}
+
+		/// <summary>
+		/// Shows server configuration dialog and returns success status
+		/// </summary>
+		private static bool ShowServerConfigurationDialog()
+		{
+			try
+			{
+					// Fix for CS8370: Use traditional using statement instead of using declaration
+				using (var configForm = new ServerConfigurationForm())
+				{
+					return configForm.ShowDialog() == DialogResult.OK;
+				}
+			}
+			catch (Exception ex)
+			{
+				SafeShowMessageBox(
+					$"Failed to open configuration dialog: {ex.Message}",
+					"Configuration Error",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
 				return false;
 			}
 		}
+
+		/// <summary>
+		/// Updates current user context with connection information
+		/// </summary>
+		private static void UpdateUserContext(ConnectionModel connectionModel)
+		{
+			if (connectionModel != null)
+			{
+				CurrentUser.HostName = connectionModel.DatabaseHost;
+				CurrentUser.DatabaseName = connectionModel.DatabaseName;
+			}
+		}
+
+		#endregion
+
 
 		public static void ApplyDefaultSettings()
 		{
 
 		}
 
-		public static void CheckDefaultFolderStructure()
+		#region Thread-Safe MessageBox
+
+		/// <summary>
+		/// Thread-safe method to show message boxes that can be called from any thread
+		/// </summary>
+		public static DialogResult SafeShowMessageBox(string message, string caption = "Error", MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.Error)
 		{
-
-		}
-
-		//public static string SaveJsonFilterList(IList<InitDataModelExtended> filterList)
-		//{
-		//	var json = new List<InitDataModelExtended>();
-
-		//	// Write MemberType List from listbox to json array
-		//	foreach (var filter in filterList)
-		//	{
-		//		json.Add(new InitDataModelExtended
-		//		{
-		//			Name = filter.Name,
-		//			Value = filter.Value,
-		//			ValuesList = filter.ValuesList
-		//		});
-		//	}
-		//	string jsonString = JsonConvert.SerializeObject(json, Formatting.None,
-		//		new JsonSerializerSettings
-		//		{ NullValueHandling = NullValueHandling.Ignore, Formatting = Formatting.Indented });
-
-		//	return jsonString;
-		//}
-
-		//public static IList<InitDataModelExtended> ReadJsonFilterList(string filterList)
-		//{
-		//	var filterDataList = new List<InitDataModelExtended>();
-		//	var jsonList = JsonConvert.DeserializeObject<IList<InitDataModelExtended>>(filterList);
-
-		//	//if (jsonList != null)
-		//	//{
-		//	//    foreach (var json in jsonList)
-		//	//    {
-		//	//        jsonList.Add(new InitDataModel{Name = json.Name, Value = json.Value});
-		//	//    }
-		//	//}
-		//	return jsonList;
-		//}
-
-		#region Assembly Attribute Accessors
-
-		public static string AssemblyTitle
-		{
-			get
-			{
-				// Get all Title attributes on this assembly
-				object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-				// If there is at least one Title attribute
-				if (attributes.Length > 0)
-				{
-					// Select the first one
-					AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
-					// If it is not an empty string, return it
-					if (titleAttribute.Title != "")
-						return titleAttribute.Title;
-				}
-				// If there was no Title attribute, or if the Title attribute was the empty string, return the .exe name
-				return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
-			}
-		}
-
-		public static string AssemblyVersion
-		{
-			get
-			{
-				//return Assembly.GetExecutingAssembly().GetName().Version.ToString();   //get assembly version
-
-				System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-				System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
-				string version = fvi.FileVersion;  // get file version
-
-				return version;
-			}
-		}
-
-		public static string AssemblyDescription
-		{
-			get
-			{
-				// Get all Description attributes on this assembly
-				object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-				// If there aren't any Description attributes, return an empty string
-				if (attributes.Length == 0)
-					return "";
-				// If there is a Description attribute, return its value
-				return ((AssemblyDescriptionAttribute)attributes[0]).Description;
-			}
-		}
-
-		public static string AssemblyProduct
-		{
-			get
-			{
-				// Get all Product attributes on this assembly
-				object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
-				// If there aren't any Product attributes, return an empty string
-				if (attributes.Length == 0)
-					return "";
-				// If there is a Product attribute, return its value
-				return ((AssemblyProductAttribute)attributes[0]).Product;
-			}
-		}
-
-		public static string AssemblyCopyright
-		{
-			get
-			{
-				// Get all Copyright attributes on this assembly
-				object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
-				// If there aren't any Copyright attributes, return an empty string
-				if (attributes.Length == 0)
-					return "";
-				// If there is a Copyright attribute, return its value
-				return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
-			}
-		}
-
-		public static string AssemblyCompany
-		{
-			get
-			{
-				// Get all Company attributes on this assembly
-				object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-				// If there aren't any Company attributes, return an empty string
-				if (attributes.Length == 0)
-					return "";
-				// If there is a Company attribute, return its value
-				return ((AssemblyCompanyAttribute)attributes[0]).Company;
-			}
-		}
-		#endregion
-
-		#region Email Notifications
-
-		public static void NotifyByEmail(string subject, string body)
-		{
+			DialogResult result = DialogResult.OK;
 			try
 			{
-				//NoReplyMailMessage noReply = new NoReplyMailMessage();
-
-				//noReply.SendEmail(new NoReplyMailModel
-				//{
-				//	MailFrom = "noreply@xolog.com",
-				//	MailDisplayNameFrom = "no-reply",
-				//	MailTo = "audit@xolog.com",
-				//	MailDisplayNameTo = "Audit",
-				//	MailSubject = subject,
-				//	MailBody = body,
-				//	MailOutgoingPort = 587,
-				//	MailHost = "mail.xolog.com",
-				//	MailUserName = "noreply@xolog.com",
-				//	MailPassword = "Parallax#16"
-				//});
-			}
-			catch (Exception exception)
-			{
-				XtraMessageBox.Show(exception.Message, @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-
-		#endregion
-
-		public static void SaveCustomFilter(string filterName, string jSonToString)
-		{
-			try
-			{
-				if (jSonToString == "")
+				if (Application.OpenForms.Count > 0 && Application.OpenForms[0] != null)
 				{
-					throw new Exception("Error while saving content filter. \nPlease contact your system administrator!");
+					var mainForm = Application.OpenForms[0];
+					if (mainForm.InvokeRequired)
+					{
+						result = (DialogResult)mainForm.Invoke(new Func<DialogResult>(() =>
+						{
+							return XtraMessageBox.Show(message, caption, buttons, icon);
+						}));
+					}
+					else
+					{
+						result = XtraMessageBox.Show(message, caption, buttons, icon);
+					}
 				}
-				string filePath = Path.Combine(Path.GetTempPath(), filterName) + ".json";
-
-				if (File.Exists(filePath))
-				{
-					File.SetAttributes(filePath, FileAttributes.Normal);
-					File.Delete(filePath);
-				}
-
-				File.WriteAllText(filePath, jSonToString);
-
-				File.SetAttributes(filePath, FileAttributes.Hidden);
-				//File.Delete(filePath);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				throw;
-			}
-		}
-
-		public static void DeleteCustomFilter(string filterName)
-		{
-			try
-			{
-				string filePath = Path.Combine(Path.GetTempPath(), filterName) + ".json";
-				//File.SetAttributes(filePath, FileAttributes.Normal);
-				File.Delete(filePath);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-			}
-		}
-
-		public class DetailControlTypeFormatter : IFormatProvider, ICustomFormatter
-		{
-			public object GetFormat(System.Type formatType)
-			{
-				if (formatType == typeof(ICustomFormatter))
-					return this;
 				else
-					return null;
-			}
-
-			public string Format(string format, object arg, IFormatProvider formatProvider)
-			{
-				if (arg == null) return String.Empty;
-				EnumDebCred value = (EnumDebCred)arg;
-
-				switch (value)
 				{
-					case EnumDebCred.D:
-						return "Debit";
-					case EnumDebCred.C:
-						return "Credit";
+					// Fallback to standard MessageBox if no forms are available
+					result = MessageBox.Show(message, caption, buttons, icon);
 				}
-
-				return string.Empty;
 			}
-
-			public enum WorkingYearPeriod
+			catch (Exception ex)
 			{
-				Year2016 = 2016,
-				Year2017 = 2017,
-				Year2018 = 2018,
-				Year2019 = 2019,
-				Year2020 = 2020,
-				Year2021 = 2021,
-				Year2022 = 2022,
-				Year2023 = 2023,
-				Year2024 = 2024,
-				Year2025 = 2025,
-				Year2026 = 2026,
-				//Year2027 = 2027,
-				//Year2028 = 2028,
-				//Year2029 = 2029,
-				//Year2030 = 2030,
+				// Last resort: use standard MessageBox
+				try
+				{
+					result = MessageBox.Show($@"Error displaying message: {ex.Message}\nOriginal message: {message}",
+						@"Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				catch
+				{
+					// If even this fails, write to debug output
+					System.Diagnostics.Debug.WriteLine($"Critical error: {ex.Message}, Original: {message}");
+				}
 			}
+			return result;
 		}
-	}
-	public static class SplashScreenHelper
-	{
-		public static void UpdateFooter(string text)
-		{
-			var options = new FluentSplashScreenOptions { RightFooter = text };
-			SplashScreenManager.Default.SendCommand(FluentSplashScreenCommand.UpdateOptions, options);
-		}
-	}
 
+		#endregion
+
+	}
 }
 

@@ -158,12 +158,12 @@ namespace SpectrumV1.DataLayers.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MongoDbConfigString {
+        public string DatabaseConnectionString {
             get {
-                return ((string)(this["MongoDbConfigString"]));
+                return ((string)(this["DatabaseConnectionString"]));
             }
             set {
-                this["MongoDbConfigString"] = value;
+                this["DatabaseConnectionString"] = value;
             }
         }
     }

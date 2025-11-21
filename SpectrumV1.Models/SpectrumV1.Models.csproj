@@ -142,6 +142,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Administration\Connections\ConnectionModel.cs" />
     <Compile Include="Administration\Update\LiveUpdateSettingsModel.cs" />
     <Compile Include="Common\Companies\BranchModel.cs" />
     <Compile Include="Common\Companies\CompanyModel.cs" />

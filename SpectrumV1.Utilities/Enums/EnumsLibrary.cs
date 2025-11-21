@@ -8,6 +8,7 @@ namespace SpectrumV1.Utilities.Enums
 		MySql,
 		MongoDb,
 		SqlServer,
+		SqLite
 	}
 
 	public enum PersonPrefix

@@ -35,7 +35,7 @@
     <Setting Name="LevelAppLog" Type="System.String" Scope="User">
       <Value Profile="(Default)">Info</Value>
     </Setting>
-    <Setting Name="MongoDbConfigString" Type="System.String" Scope="User">
+    <Setting Name="DatabaseConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>
