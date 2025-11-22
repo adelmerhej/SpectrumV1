@@ -9,6 +9,7 @@ using SpectrumV1.Models.Users;
 using SpectrumV1.Properties;
 using SpectrumV1.Utilities;
 using SpectrumV1.Utilities.Layout;
+using SpectrumV1.Views.Main;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -338,6 +339,10 @@ namespace SpectrumV1.Views.Users
 			if (cboCompanies.EditValue != null) CurrentUser.Company = cboCompanies.EditValue.ToString();
 		}
 
-
+		private void lnkAbout_Click(object sender, EventArgs e)
+		{
+			AboutForm dForm = new AboutForm();
+			dForm.ShowDialog();
+		}
 	}
 }
