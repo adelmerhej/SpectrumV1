@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using SpectrumV1.DataLayers.Users;
 using SpectrumV1.Models.Users;
-using SpectrumV1.Utilities.Common;
 using System.Threading.Tasks;
 
 namespace SpectrumV1.BusinessLogic.Users

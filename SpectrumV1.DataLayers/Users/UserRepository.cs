@@ -1,9 +1,12 @@
 ﻿using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
 using SpectrumV1.DataLayers.DataAccess.Types;
 using SpectrumV1.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoDB.Bson; // for regex
+using System.Text.RegularExpressions; // for case-insensitive matching
 
 namespace SpectrumV1.DataLayers.Users
 {
@@ -16,11 +19,13 @@ namespace SpectrumV1.DataLayers.Users
 		public UserRepository()
 		{
 			var connectionString = MongoDbDatabaseModel.BuildConnectionString();
-			var databaseName = CollectionName;
+			var url = new MongoUrl(connectionString);
+			// Use database specified in connection string; fall back to "admin" then CollectionName
+			var databaseName = string.IsNullOrWhiteSpace(url.DatabaseName) ? "admin" : url.DatabaseName.Trim();
 
-			var client = new MongoClient(connectionString);
+			var client = new MongoClient(url); // reuse parsed settings
 			var database = client.GetDatabase(databaseName);
-			_users = database.GetCollection<UserModel>(databaseName);
+			_users = database.GetCollection<UserModel>(CollectionName);
 		}
 
 		/// <summary>
@@ -41,21 +46,24 @@ namespace SpectrumV1.DataLayers.Users
 		}
 
 		/// <summary>
-		/// Retrieves a user by their userName.
+		/// Retrieves a user by their Username (case-insensitive, trimmed).
 		/// </summary>
 		public async Task<UserModel> GetUserByNameAsync(string userName)
 		{
-			var filter = Builders<UserModel>.Filter.Eq(u => u.Username, userName);
+			if (string.IsNullOrWhiteSpace(userName)) return null;
+			var pattern = "^" + Regex.Escape(userName.Trim()) + "$"; // exact match
+			var filter = Builders<UserModel>.Filter.Regex(u => u.Username, new BsonRegularExpression(pattern, "i"));
 			return await _users.Find(filter).FirstOrDefaultAsync();
 		}
 
 		/// <summary>
-		/// Retrieves a user by their email.
+		/// Retrieves a user by their email (case-insensitive, trimmed).
 		/// </summary>
 		public async Task<UserModel> GetUserByEmailAsync(string email)
 		{
-			// Use a case-insensitive match for email lookup
-			var filter = Builders<UserModel>.Filter.Eq(u => u.Email, email.ToLower());
+			if (string.IsNullOrWhiteSpace(email)) return null;
+			var pattern = "^" + Regex.Escape(email.Trim()) + "$";
+			var filter = Builders<UserModel>.Filter.Regex(u => u.Email, new BsonRegularExpression(pattern, "i"));
 			return await _users.Find(filter).FirstOrDefaultAsync();
 		}
 
@@ -67,10 +75,8 @@ namespace SpectrumV1.DataLayers.Users
 		{
 			try
 			{
-				// Ensure necessary default fields are set before insert
-				user.CreatedAt = System.DateTime.UtcNow;
-				user.SecurityStamp = System.Guid.NewGuid().ToString();
-
+				user.CreatedAt = DateTime.UtcNow;
+				user.SecurityStamp = Guid.NewGuid().ToString();
 				await _users.InsertOneAsync(user);
 				return user._id;
 			}
@@ -78,7 +84,6 @@ namespace SpectrumV1.DataLayers.Users
 			{
 				throw;
 			}
-
 		}
 
 		/// <summary>
@@ -88,10 +93,7 @@ namespace SpectrumV1.DataLayers.Users
 		{
 			try
 			{
-				var result = await _users.ReplaceOneAsync(u => u._id == user._id, // Filter by Id
-									user // The new document to replace the old one
-									);
-
+				var result = await _users.ReplaceOneAsync(u => u._id == user._id, user);
 				return result.IsAcknowledged && result.ModifiedCount > 0;
 			}
 			catch (Exception)
@@ -106,42 +108,17 @@ namespace SpectrumV1.DataLayers.Users
 		}
 
 		// --- Authentication Logic ---
-		/// <summary>
-		/// Authenticates a user based on email and a pre-hashed password.
-		/// </summary>
-		/// <param name="email">The user's email.</param>
-		/// <param name="hashedPassword">The already hashed password provided by the caller.</param>
-		/// <returns>The authenticated ApplicationUser or null if authentication fails.</returns>
 		public async Task<UserModel> AuthenticateUserAsync(string email, string hashedPassword)
 		{
-			// 1. Find the user by email (case-insensitive)
 			var user = await GetUserByEmailAsync(email);
-
-			if (user == null)
-			{
-				return null; // User not found
-			}
-
-			// 2. Check the stored PasswordHash against the provided hashed password
-			// IMPORTANT: In a real application, you must use a proper password hashing library 
-			// (like BCrypt or Argon2) and use a separate method to VERIFY the password 
-			// hash, not a direct string comparison like this.
-			if (user.PasswordHash == hashedPassword)
-			{
-				// Authentication successful
-				return user;
-			}
-
-			return null; // Password mismatch
+			if (user == null) return null;
+			return user.PasswordHash == hashedPassword ? user : null;
 		}
 
 		#region Implementation of IDisposable
-
 		public void Dispose()
 		{
-
 		}
-
 		#endregion
 	}
 }
