@@ -318,7 +318,7 @@ namespace SpectrumV1.Utilities
 		{
 			try
 			{
-					// Fix for CS8370: Use traditional using statement instead of using declaration
+				// Fix for CS8370: Use traditional using statement instead of using declaration
 				using (var configForm = new ServerConfigurationForm())
 				{
 					return configForm.ShowDialog() == DialogResult.OK;
@@ -352,14 +352,52 @@ namespace SpectrumV1.Utilities
 
 		public static void ApplyDefaultSettings()
 		{
+			// Add default records or settings as needed
+			try
+			{
+				//1- Check collection Companies and add default if empty
+				var companyRepo = new DataLayers.Common.Companies.CompanyRepository();
+				var companyCount = companyRepo.GetCountAsync().Result;
+				if (companyCount == 0)
+				{
+					var defaultCompany = new Models.Common.Companies.CompanyModel
+					{
+						CompanyName = "Spectrum Lebanon",
+						ShortName = "Spectrum lb",
+						DirectoryPath = @"z:\Companies\Spectrum-lb",
+						Address = "",
+						PhoneNumber1 = "48 3683 838",
+						Email = "",
+						Website = "www.spectrumlb.com"
+					};
+					companyRepo.AddNewCompanyAsync(defaultCompany).Wait();
+				}
 
+				//2- Check collection Companies and add default if empty
+				var branchRepo = new DataLayers.Common.Branches.BranchRepository();
+				var branchCount = branchRepo.GetCountAsync().Result;
+				if (branchCount == 0)
+				{
+					var defaultBranch = new Models.Common.Companies.BranchModel
+					{
+						BranchName = "Default Branch"
+					};
+					branchRepo.AddNewBranchAsync(defaultBranch).Wait();
+				}
+
+			}
+			catch (Exception ex)
+			{
+				SafeShowMessageBox(ex.Message, $@"Error {ex.HResult.ToString()}", MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+			}
 		}
 
 		#region Thread-Safe MessageBox
 
-		/// <summary>
-		/// Thread-safe method to show message boxes that can be called from any thread
-		/// </summary>
+			/// <summary>
+			/// Thread-safe method to show message boxes that can be called from any thread
+			/// </summary>
 		public static DialogResult SafeShowMessageBox(string message, string caption = "Error", MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.Error)
 		{
 			DialogResult result = DialogResult.OK;

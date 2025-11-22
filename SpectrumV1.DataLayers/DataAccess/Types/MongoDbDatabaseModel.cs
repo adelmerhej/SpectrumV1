@@ -280,17 +280,12 @@ namespace SpectrumV1.DataLayers.DataAccess.Types
 					)
 				);
 
-				Console.WriteLine("Index 'EmailUniqueIndex' created/verified on Users collection.");
-
 				// --- Step 2: Check if Collection is Empty and Insert Default User ---
-
 				// Check the count. If it's 0, the collection is new or empty.
 				long userCount = await usersCollection.CountDocumentsAsync(new BsonDocument());
 
 				if (userCount == 0)
 				{
-					Console.WriteLine("Users collection is empty. Inserting default 'admin' user.");
-
 					// Create the default admin user document
 					SystemUtilities.PasswordHasher = new PasswordHasher();
 					var temporaryAdminPassword = SystemUtilities.PasswordHasher.HashPassword("admin");

@@ -7,7 +7,7 @@ namespace SpectrumV1.DataLayers.Common.Companies
 	public interface ICompanyRepository
 	{
 		// CRUD Operations
-		Task<List<CompanyModel>> GetcompaniesAsync();
+		Task<List<CompanyModel>> GetCompaniesAsync();
 		Task<CompanyModel> GetCompanyByIdAsync(string id);
 		Task<string> AddNewCompanyAsync(CompanyModel company);
 		Task<bool> UpdateCompanyAsync(CompanyModel company);
@@ -15,5 +15,6 @@ namespace SpectrumV1.DataLayers.Common.Companies
 
 		// A custom query example
 		Task<CompanyModel> GetCompanyByName(string name);
+		Task<long> GetCountAsync();
 	}
 }

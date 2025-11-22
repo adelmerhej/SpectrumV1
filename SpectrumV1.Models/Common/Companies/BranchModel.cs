@@ -6,8 +6,8 @@ namespace SpectrumV1.Models.Common.Companies
 {
 	public class BranchModel : EntityObject, ICloneable
 	{
-		[BsonElement("Name")]
-		public string Name { get; set; }
+		[BsonElement("BranchName")]
+		public string BranchName { get; set; }
 
 
 		#region Implementation of ICloneable

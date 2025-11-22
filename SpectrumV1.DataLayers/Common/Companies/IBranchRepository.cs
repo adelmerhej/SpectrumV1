@@ -15,5 +15,6 @@ namespace SpectrumV1.DataLayers.Common.Branches
 
 		// A custom query example
 		Task<BranchModel> GetBranchByName(string name);
+		Task<long> GetCountAsync();
 	}
 }

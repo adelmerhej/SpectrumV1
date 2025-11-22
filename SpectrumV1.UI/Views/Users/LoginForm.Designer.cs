@@ -43,22 +43,22 @@
 			this.lblPassword = new DevExpress.XtraEditors.LabelControl();
 			this.btnCancel = new DevExpress.XtraEditors.SimpleButton();
 			this.btnLogin = new DevExpress.XtraEditors.SimpleButton();
-			this.lblUserName = new DevExpress.XtraEditors.LabelControl();
+			this.lblUsername = new DevExpress.XtraEditors.LabelControl();
 			this.tablePanel1 = new DevExpress.Utils.Layout.TablePanel();
-			this.cboCompanies = new DevExpress.XtraEditors.LookUpEdit();
 			this.lblCompaniesList = new DevExpress.XtraEditors.LabelControl();
 			this.chkSavePassword = new DevExpress.XtraEditors.CheckEdit();
-			this.txtUserName = new DevExpress.XtraEditors.TextEdit();
+			this.txtUsername = new DevExpress.XtraEditors.TextEdit();
 			this.txtPassword = new DevExpress.XtraEditors.ButtonEdit();
 			this.picLogo = new DevExpress.XtraEditors.PictureEdit();
+			this.cboCompanies = new DevExpress.XtraEditors.LookUpEdit();
 			((System.ComponentModel.ISupportInitialize)(this.behaviorManager1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tablePanel1)).BeginInit();
 			this.tablePanel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.cboCompanies.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.chkSavePassword.Properties)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.txtUserName.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.txtUsername.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.txtPassword.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.picLogo.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.cboCompanies.Properties)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// lnkAbout
@@ -158,12 +158,10 @@
 			// 
 			// btnCancel
 			// 
-			this.tablePanel1.SetColumn(this.btnCancel, 3);
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnCancel.Location = new System.Drawing.Point(313, 90);
 			this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.btnCancel.Name = "btnCancel";
-			this.tablePanel1.SetRow(this.btnCancel, 3);
 			this.btnCancel.Size = new System.Drawing.Size(102, 24);
 			this.btnCancel.TabIndex = 4;
 			this.btnCancel.Text = "&Cancel";
@@ -171,28 +169,26 @@
 			// 
 			// btnLogin
 			// 
-			this.tablePanel1.SetColumn(this.btnLogin, 2);
 			this.btnLogin.Location = new System.Drawing.Point(211, 90);
 			this.btnLogin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.btnLogin.Name = "btnLogin";
-			this.tablePanel1.SetRow(this.btnLogin, 3);
 			this.btnLogin.Size = new System.Drawing.Size(96, 24);
 			this.btnLogin.TabIndex = 5;
 			this.btnLogin.Text = "&Login";
 			this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
 			// 
-			// lblUserName
+			// lblUsername
 			// 
-			this.lblUserName.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
-			this.lblUserName.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(105)))), ((int)(((byte)(220)))));
-			this.lblUserName.Appearance.Options.UseFont = true;
-			this.lblUserName.Appearance.Options.UseForeColor = true;
-			this.lblUserName.Location = new System.Drawing.Point(3, 5);
-			this.lblUserName.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.lblUserName.Name = "lblUserName";
-			this.lblUserName.Size = new System.Drawing.Size(82, 18);
-			this.lblUserName.TabIndex = 3;
-			this.lblUserName.Text = "User Name";
+			this.lblUsername.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+			this.lblUsername.Appearance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(105)))), ((int)(((byte)(220)))));
+			this.lblUsername.Appearance.Options.UseFont = true;
+			this.lblUsername.Appearance.Options.UseForeColor = true;
+			this.lblUsername.Location = new System.Drawing.Point(3, 5);
+			this.lblUsername.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.lblUsername.Name = "lblUsername";
+			this.lblUsername.Size = new System.Drawing.Size(75, 18);
+			this.lblUsername.TabIndex = 3;
+			this.lblUsername.Text = "Username";
 			// 
 			// tablePanel1
 			// 
@@ -209,8 +205,8 @@
 			this.tablePanel1.Controls.Add(this.lblPassword);
 			this.tablePanel1.Controls.Add(this.btnCancel);
 			this.tablePanel1.Controls.Add(this.btnLogin);
-			this.tablePanel1.Controls.Add(this.lblUserName);
-			this.tablePanel1.Controls.Add(this.txtUserName);
+			this.tablePanel1.Controls.Add(this.lblUsername);
+			this.tablePanel1.Controls.Add(this.txtUsername);
 			this.tablePanel1.Controls.Add(this.txtPassword);
 			this.tablePanel1.Location = new System.Drawing.Point(146, 246);
 			this.tablePanel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -222,25 +218,6 @@
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
 			this.tablePanel1.Size = new System.Drawing.Size(418, 120);
 			this.tablePanel1.TabIndex = 57;
-			// 
-			// cboCompanies
-			// 
-			this.tablePanel1.SetColumn(this.cboCompanies, 1);
-			this.tablePanel1.SetColumnSpan(this.cboCompanies, 3);
-			this.cboCompanies.Location = new System.Drawing.Point(103, 62);
-			this.cboCompanies.Name = "cboCompanies";
-			this.cboCompanies.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-			this.cboCompanies.Properties.Columns.AddRange(new DevExpress.XtraEditors.Controls.LookUpColumnInfo[] {
-            new DevExpress.XtraEditors.Controls.LookUpColumnInfo("Id", "Id"),
-            new DevExpress.XtraEditors.Controls.LookUpColumnInfo("CompanyName", "Name", 60, DevExpress.Utils.FormatType.None, "", true, DevExpress.Utils.HorzAlignment.Default, DevExpress.Data.ColumnSortOrder.None, DevExpress.Utils.DefaultBoolean.Default)});
-			this.cboCompanies.Properties.DisplayMember = "CompanyName";
-			this.cboCompanies.Properties.NullText = "";
-			this.cboCompanies.Properties.ValueMember = "Id";
-			this.tablePanel1.SetRow(this.cboCompanies, 2);
-			this.cboCompanies.Size = new System.Drawing.Size(312, 22);
-			this.cboCompanies.TabIndex = 2;
-			this.cboCompanies.EditValueChanged += new System.EventHandler(this.cboCompanies_EditValueChanged);
 			// 
 			// lblCompaniesList
 			// 
@@ -272,17 +249,17 @@
 			this.chkSavePassword.Size = new System.Drawing.Size(203, 24);
 			this.chkSavePassword.TabIndex = 3;
 			// 
-			// txtUserName
+			// txtUsername
 			// 
-			this.tablePanel1.SetColumn(this.txtUserName, 1);
-			this.tablePanel1.SetColumnSpan(this.txtUserName, 3);
-			this.txtUserName.EditValue = "";
-			this.txtUserName.Location = new System.Drawing.Point(103, 4);
-			this.txtUserName.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.txtUserName.Name = "txtUserName";
-			this.tablePanel1.SetRow(this.txtUserName, 0);
-			this.txtUserName.Size = new System.Drawing.Size(312, 22);
-			this.txtUserName.TabIndex = 0;
+			this.tablePanel1.SetColumn(this.txtUsername, 1);
+			this.tablePanel1.SetColumnSpan(this.txtUsername, 3);
+			this.txtUsername.EditValue = "";
+			this.txtUsername.Location = new System.Drawing.Point(103, 4);
+			this.txtUsername.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.txtUsername.Name = "txtUsername";
+			this.tablePanel1.SetRow(this.txtUsername, 0);
+			this.txtUsername.Size = new System.Drawing.Size(312, 22);
+			this.txtUsername.TabIndex = 0;
 			// 
 			// txtPassword
 			// 
@@ -314,6 +291,24 @@
 			this.picLogo.Size = new System.Drawing.Size(415, 212);
 			this.picLogo.TabIndex = 58;
 			// 
+			// cboCompanies
+			// 
+			this.tablePanel1.SetColumn(this.cboCompanies, 1);
+			this.tablePanel1.SetColumnSpan(this.cboCompanies, 3);
+			this.cboCompanies.Location = new System.Drawing.Point(103, 62);
+			this.cboCompanies.Name = "cboCompanies";
+			this.cboCompanies.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+			this.cboCompanies.Properties.Columns.AddRange(new DevExpress.XtraEditors.Controls.LookUpColumnInfo[] {
+            new DevExpress.XtraEditors.Controls.LookUpColumnInfo("_id", "Id"),
+            new DevExpress.XtraEditors.Controls.LookUpColumnInfo("CompanyName", "Name", 60, DevExpress.Utils.FormatType.None, "", true, DevExpress.Utils.HorzAlignment.Default, DevExpress.Data.ColumnSortOrder.None, DevExpress.Utils.DefaultBoolean.Default)});
+			this.cboCompanies.Properties.DisplayMember = "CompanyName";
+			this.cboCompanies.Properties.NullText = "";
+			this.cboCompanies.Properties.ValueMember = "_id";
+			this.tablePanel1.SetRow(this.cboCompanies, 2);
+			this.cboCompanies.Size = new System.Drawing.Size(312, 22);
+			this.cboCompanies.TabIndex = 9;
+			// 
 			// LoginForm
 			// 
 			this.AcceptButton = this.btnLogin;
@@ -340,11 +335,11 @@
 			((System.ComponentModel.ISupportInitialize)(this.tablePanel1)).EndInit();
 			this.tablePanel1.ResumeLayout(false);
 			this.tablePanel1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.cboCompanies.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.chkSavePassword.Properties)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.txtUserName.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.txtUsername.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.txtPassword.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.picLogo.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.cboCompanies.Properties)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -360,13 +355,13 @@
 		private DevExpress.XtraEditors.LabelControl lblPassword;
 		private DevExpress.XtraEditors.SimpleButton btnCancel;
 		private DevExpress.Utils.Layout.TablePanel tablePanel1;
-		private DevExpress.XtraEditors.LookUpEdit cboCompanies;
 		private DevExpress.XtraEditors.LabelControl lblCompaniesList;
 		private DevExpress.XtraEditors.CheckEdit chkSavePassword;
 		private DevExpress.XtraEditors.SimpleButton btnLogin;
-		private DevExpress.XtraEditors.LabelControl lblUserName;
-		private DevExpress.XtraEditors.TextEdit txtUserName;
+		private DevExpress.XtraEditors.LabelControl lblUsername;
+		private DevExpress.XtraEditors.TextEdit txtUsername;
 		private DevExpress.XtraEditors.ButtonEdit txtPassword;
 		private DevExpress.XtraEditors.PictureEdit picLogo;
+		private DevExpress.XtraEditors.LookUpEdit cboCompanies;
 	}
 }

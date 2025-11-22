@@ -1,18 +1,19 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
+using SpectrumV1.DataLayers.Common.Branches;
 using SpectrumV1.DataLayers.Common.Companies;
 using SpectrumV1.DataLayers.Common.Forms;
 using SpectrumV1.DataLayers.Users;
 using SpectrumV1.Models.Common.Companies;
 using SpectrumV1.Models.Users;
+using SpectrumV1.Properties;
 using SpectrumV1.Utilities;
-using SpectrumV1.Utilities.Common;
 using SpectrumV1.Utilities.Layout;
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using SpectrumV1.Properties;
-using SpectrumV1.DataLayers.Common.Branches; // added for BranchRepository
 
 namespace SpectrumV1.Views.Users
 {
@@ -47,26 +48,32 @@ namespace SpectrumV1.Views.Users
 		{
 			InitializeComponent();
 
-			InitializeBindings();
+			StartLoading();
+		}
+
+		private async void StartLoading()
+		{
+			await InitializeBindings();
 			WireUpBindings();
 			ApplyDefaults();
 			ApplyPermissions();
+
 		}
 
 		private void LoginForm_Load(object sender, EventArgs e)
 		{
-			txtUserName.Focus();
+			txtUsername.Focus();
 			chkSavePassword.Checked = false;
 			cboCompanies.EditValue = Settings.Default.CompanyName;
 			if (Settings.Default.SavePassword)
 			{
-				txtUserName.Text = Settings.Default.UserName;
+				txtUsername.Text = Settings.Default.UserName;
 				txtPassword.Text = Settings.Default.UserPassword;
 				chkSavePassword.Checked = Settings.Default.SavePassword;
 			}
 		}
 
-		private void InitializeBindings()
+		private async Task InitializeBindings()
 		{
 			try
 			{
@@ -79,7 +86,7 @@ namespace SpectrumV1.Views.Users
 				//		if (isProtected != null) _isProtected = (bool)isProtected;
 				//	}
 				//	//
-				_companies = _companyRepository.SelectCompanies();
+				_companies = await _companyRepository.GetCompaniesAsync();
 			}
 			catch (Exception ex)
 			{
@@ -113,20 +120,20 @@ namespace SpectrumV1.Views.Users
 
 		private async void btnLogin_Click(object sender, EventArgs e)
 		{
-			if (!ValidateRequiredDataForm()) return;
+			if (!ValidateData()) return;
 
 			try
 			{
 				using (var userRepository = new UserRepository())
 				{
 					var loginService = new SpectrumV1.BusinessLogic.Users.LoginService(userRepository);
-					var user = await loginService.AuthenticateAsync(txtUserName.Text.Trim(), txtPassword.Text);
+					var user = await loginService.AuthenticateAsync(txtUsername.Text.Trim(), txtPassword.Text);
 
 					if (user == null)
 					{
 						XtraMessageBox.Show(@"Username or Password are incorrect! Please try again.", @"Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						txtPassword.Text = string.Empty;
-						txtUserName.Focus();
+						txtUsername.Focus();
 						return;
 					}
 
@@ -172,34 +179,45 @@ namespace SpectrumV1.Views.Users
 			}
 		}
 
-		private bool ValidateRequiredDataForm()
+		private bool ValidateData()
 		{
-			if (string.IsNullOrEmpty(txtUserName.Text))
-			{
-				XtraMessageBox.Show(@"Login Username cannot be empty! Please try again.", @"Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
+			var validateReturnValue = true;
+			//var messageNumber = 0;
+			var validateMessage = new StringBuilder();
 
-				txtUserName.Focus();
-				return false;
+			if (string.IsNullOrEmpty(txtUsername.Text))
+			{
+				//messageNumber += 1;
+				validateMessage.Append("\n- Username cannot be empty.");
+				validateReturnValue = false;
+				txtUsername.Focus();
 			}
+
 			if (string.IsNullOrEmpty(txtPassword.Text))
 			{
-				XtraMessageBox.Show(@"Login Password cannot be empty! Please try again.", @"Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
-
+				//messageNumber += 1;
+				validateMessage.Append("\n- Password cannot be empty.");
+				validateReturnValue = false;
 				txtPassword.Focus();
-				return false;
 			}
-			//if (string.IsNullOrEmpty(cboCompanies.Text))
-			//{
-			//	XtraMessageBox.Show(@"Company cannot be empty! Please try again.", @"Error",
-			//		MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-			//	cboCompanies.Focus();
-			//	return false;
-			//}
+			if (string.IsNullOrEmpty(cboCompanies.Text))
+			{
+				//messageNumber += 1;
+				validateMessage.Append("\n- Company cannot be empty.");
+				validateReturnValue = false;
+				cboCompanies.Focus();
+			}
 
-			return true;
+			if (!validateReturnValue)
+			{
+				validateMessage.Insert(0, "The following need your attention:");
+				//if (messageNumber > 1) validateMessage.Replace("following", "followings");
+				XtraMessageBox.Show(validateMessage + " \nPlease try again.",
+					"Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			}
+
+			return validateReturnValue;
 		}
 
 		private void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -216,28 +234,11 @@ namespace SpectrumV1.Views.Users
 			Close();
 		}
 
-
-		private void ApplyFirstTimeSettings()
-		{
-			//if (_userModel.UserName.ToLower() != "admin") return;
-
-			//_userPermissionRepository.SeedUserPermissionsData(_userModel.Id, _userModel.UserName.ToLower() == "admin");
-			//_userModel.FirstTimeAccess = false;
-			//_userRepository.UpdateUser(_userModel);
-		}
-		private void RefreshUserPermission()
-		{
-			LayoutsStyle.ResetLayoutMenu("mainMenu", CurrentUser.UserName);
-
-			//_userModel.PermissionChanged = false;
-			//_userRepository.UpdateUser(_userModel);
-		}
-
 		private void CheckAndSaveSettings()
 		{
 			if (chkSavePassword.Checked)
 			{
-				Settings.Default.UserName = txtUserName.Text;
+				Settings.Default.UserName = txtUsername.Text;
 				Settings.Default.UserPassword = txtPassword.Text;
 			}
 			else
@@ -255,12 +256,12 @@ namespace SpectrumV1.Views.Users
 		{
 			try
 			{
-				if (txtUserName.Text == "")
+				if (txtUsername.Text == "")
 				{
 					XtraMessageBox.Show(this,
 						"You have to authenticate your username to change its password.\nOtherwise contact your system administrator.",
 						"Warning Message", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-					txtUserName.Focus();
+					txtUsername.Focus();
 					return;
 				}
 
@@ -272,10 +273,10 @@ namespace SpectrumV1.Views.Users
 					cboCompanies.Focus();
 					return;
 				}
-				var changeUserModel = await _userRepository.GetUserByNameAsync(txtUserName.Text.Trim());
-				if (txtUserName.Text == string.Empty || changeUserModel == null)
+				var changeUserModel = await _userRepository.GetUserByNameAsync(txtUsername.Text.Trim());
+				if (txtUsername.Text == string.Empty || changeUserModel == null)
 				{
-					XtraMessageBox.Show($"Invalid username [ {txtUserName.Text} ].", "Change Password",
+					XtraMessageBox.Show($"Invalid username [ {txtUsername.Text} ].", "Change Password",
 						MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					return;
 				}

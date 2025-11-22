@@ -1,85 +1,99 @@
-﻿using SpectrumV1.Models.Common.Companies;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using SpectrumV1.DataLayers.DataAccess.Types;
+using SpectrumV1.Models.Common.Companies;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SpectrumV1.DataLayers.Common.Branches; // interface namespace
 
 namespace SpectrumV1.DataLayers.Common.Branches
 {
 	public class BranchRepository : IBranchRepository, IDisposable
 	{
-		// Legacy sync stubs
-		public IList<BranchModel> SelectBranches()
+		private readonly IMongoCollection<BranchModel> _branches;
+		private const string CollectionName = "Branches";
+
+		// Constructor for dependency injection
+		public BranchRepository()
 		{
-			throw new NotImplementedException();
+			var connectionString = MongoDbDatabaseModel.BuildConnectionString();
+			var url = new MongoUrl(connectionString);
+			// Use database specified in connection string; fall back to "admin" then CollectionName
+			var databaseName = string.IsNullOrWhiteSpace(url.DatabaseName) ? "admin" : url.DatabaseName.Trim();
+
+			var client = new MongoClient(url); // reuse parsed settings
+			var database = client.GetDatabase(databaseName);
+			_branches = database.GetCollection<BranchModel>(CollectionName);
 		}
 
-		public BranchModel SelectBranchById(string id)
+		// Interface async implementations (wrapping legacy sync methods)
+		public async Task<List<BranchModel>> GetBranchesAsync()
 		{
-			throw new NotImplementedException();
+			return await _branches.Find(branch => true).ToListAsync();
 		}
 
-		public IList<BranchModel> SelectBranchesByName(string name)
+		public async Task<BranchModel> GetBranchByIdAsync(string id)
 		{
-			throw new NotImplementedException();
+			var filter = Builders<BranchModel>.Filter.Eq(u => u._id, id);
+			return await _branches.Find(filter).FirstOrDefaultAsync();
 		}
 
-		public string AddNewBranch(BranchModel branch)
+		public async Task<BranchModel> GetBranchByName(string branchName)
 		{
-			throw new NotImplementedException();
+			if (string.IsNullOrWhiteSpace(branchName)) return null;
+			var pattern = "^" + Regex.Escape(branchName.Trim()) + "$"; // exact match
+			var filter = Builders<BranchModel>.Filter.Regex(u => u.BranchName, new BsonRegularExpression(pattern, "i"));
+			return await _branches.Find(filter).FirstOrDefaultAsync();
 		}
 
-		public bool UpdateBranch(BranchModel branch)
+		/// <summary>
+		/// Adds a new branch to the database.
+		/// </summary>
+		/// <returns>The newly generated Id of the branch.</returns>
+		public async Task<string> AddNewBranchAsync(BranchModel branch)
 		{
-			throw new NotImplementedException();
-		}
-
-		public bool DeleteBranch(string id)
-		{
-			throw new NotImplementedException();
-		}
-
-		// Async interface wrappers
-		public Task<List<BranchModel>> GetBranchesAsync()
-		{
-			var list = SelectBranches();
-			return Task.FromResult(list == null ? new List<BranchModel>() : new List<BranchModel>(list));
-		}
-
-		public Task<BranchModel> GetBranchByIdAsync(string id)
-		{
-			return Task.FromResult(SelectBranchById(id));
-		}
-
-		public Task<string> AddNewBranchAsync(BranchModel branch)
-		{
-			return Task.FromResult(AddNewBranch(branch));
-		}
-
-		public Task<bool> UpdateBranchAsync(BranchModel branch)
-		{
-			return Task.FromResult(UpdateBranch(branch));
-		}
-
-		public Task<bool> DeleteBranchAsync(string id)
-		{
-			return Task.FromResult(DeleteBranch(id));
-		}
-
-		public Task<BranchModel> GetBranchByName(string name)
-		{
-			var list = SelectBranchesByName(name);
-			BranchModel branch = null;
-			if (list != null)
+			try
 			{
-				foreach (var b in list)
-				{
-					branch = b;
-					break;
-				}
+				branch.CreatedAt = DateTime.UtcNow;
+				await _branches.InsertOneAsync(branch);
+				return branch._id;
 			}
-			return Task.FromResult(branch);
+			catch (Exception)
+			{
+				throw;
+			}
 		}
+
+		/// <summary>
+		/// Updates an existing branch document.
+		/// </summary>
+		public async Task<bool> UpdateBranchAsync(BranchModel branch)
+		{
+			try
+			{
+				var result = await _branches.ReplaceOneAsync(u => u._id == branch._id, branch);
+				return result.IsAcknowledged && result.ModifiedCount > 0;
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		public async Task<bool> DeleteBranchAsync(string id)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Check if there's records for branch document.
+		/// </summary>
+		public async Task<long> GetCountAsync()
+		{
+			return await _branches.CountDocumentsAsync(new BsonDocument());
+		}
+
 
 		#region Implementation of IDisposable
 		public void Dispose()
