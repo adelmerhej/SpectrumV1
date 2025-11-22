@@ -145,6 +145,8 @@
     <Compile Include="Administration\Update\LiveUpdateSettingsProvider.cs" />
     <Compile Include="Common\Companies\BranchRepository.cs" />
     <Compile Include="Common\Companies\CompanyRepository.cs" />
+    <Compile Include="Common\Companies\IBranchRepository.cs" />
+    <Compile Include="Common\Companies\ICompanyRepository.cs" />
     <Compile Include="Common\Forms\FormCategoryRepository.cs" />
     <Compile Include="Common\Forms\FormRepository.cs" />
     <Compile Include="DataAccess\AbstractDatabaseModel.cs" />
@@ -163,6 +165,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Users\IUserRepository.cs" />
     <Compile Include="Users\UserPermissionRepository.cs" />
     <Compile Include="Users\UserRepository.cs" />
   </ItemGroup>

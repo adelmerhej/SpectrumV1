@@ -1,5 +1,4 @@
-﻿
-namespace SpectrumV1.Models.Users
+﻿namespace SpectrumV1.Models.Users
 {
 	public static class CurrentUser
 	{
@@ -10,5 +9,6 @@ namespace SpectrumV1.Models.Users
 		public static string Company { get; set; }
 		public static string Branch { get; set; }
 		public static int WorkingYear { get; set; }
+		public static string CompanyName { get; set; } // Added CompanyName to match usage in LoginForm
 	}
 }

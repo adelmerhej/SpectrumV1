@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using SpectrumV1.Properties;
+using SpectrumV1.DataLayers.Common.Branches; // added for BranchRepository
 
 namespace SpectrumV1.Views.Users
 {
@@ -26,7 +27,7 @@ namespace SpectrumV1.Views.Users
 		private CompanyRepository _companyRepository = new CompanyRepository();
 		private BranchRepository _branchRepository = new BranchRepository();
 
-		private readonly UserRepository _userRepository = new UserRepository();
+		//private readonly UserRepository _userRepository = new UserRepository();
 
 		/// <summary>
 		/// User Permission Role
@@ -52,25 +53,38 @@ namespace SpectrumV1.Views.Users
 			ApplyPermissions();
 		}
 
+		private void LoginForm_Load(object sender, EventArgs e)
+		{
+			txtUserName.Focus();
+			chkSavePassword.Checked = false;
+			cboCompanies.EditValue = Settings.Default.CompanyId;
+			if (Settings.Default.SavePassword)
+			{
+				txtUserName.Text = Settings.Default.UserName;
+				txtPassword.Text = Settings.Default.UserPassword;
+				chkSavePassword.Checked = Settings.Default.SavePassword;
+			}
+		}
+
 		private void InitializeBindings()
 		{
-			//try
-			//{
-			//	//
-			//	_formId = _formRepository.SelectFormByName(_formName);
-			//	_userPermission = _userPermissionRepository.SelectUserPermissionById(CurrentUser.UserId, _formId);
-			//	if (_userPermission is { Count: > 0 })
-			//	{
-			//		var isProtected = _userPermission.SingleOrDefault(x => x.ControlName == "IsProtected")?.Value;
-			//		if (isProtected != null) _isProtected = (bool)isProtected;
-			//	}
-			//	//
-			//	_companies = _companyRepository.SelectCompanies();
-			//}
-			//catch (Exception ex)
-			//{
-			//	XtraMessageBox.Show(ex.Message, @"Error Login", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			//}
+			try
+			{
+				//	//
+				//	_formId = _formRepository.SelectFormByName(_formName);
+				//	_userPermission = _userPermissionRepository.SelectUserPermissionById(CurrentUser.UserId, _formId);
+				//	if (_userPermission is { Count: > 0 })
+				//	{
+				//		var isProtected = _userPermission.SingleOrDefault(x => x.ControlName == "IsProtected")?.Value;
+				//		if (isProtected != null) _isProtected = (bool)isProtected;
+				//	}
+				//	//
+				_companies = _companyRepository.SelectCompanies();
+			}
+			catch (Exception ex)
+			{
+				XtraMessageBox.Show(ex.Message, @"Error Login", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		private void WireUpBindings()
@@ -97,90 +111,46 @@ namespace SpectrumV1.Views.Users
 
 		}
 
-		private void btnLogin_Click(object sender, EventArgs e)
+		private async void btnLogin_Click(object sender, EventArgs e)
 		{
-			//if (!ValidateRequiredDataForm()) return;
+			if (!ValidateRequiredDataForm()) return;
 
-			//_selectedCompany = (int)cboCompanies.EditValue;
-			//if (_selectedCompany != Settings.Default.CompanyId) ChangeConnection();
+			try
+			{
+				// Resolve selected company context (optional future logic)
+				if (cboCompanies.EditValue != null)
+				{
+					CurrentUser.Company = cboCompanies.EditValue.ToString();
+					CurrentUser.CompanyName = cboCompanies.Text;
+				}
 
-			DialogResult = DialogResult.OK;
-			Close();
+				using (var userRepository = new UserRepository())
+				{
+					var loginService = new SpectrumV1.BusinessLogic.Users.LoginService(userRepository);
+					var user = await loginService.AuthenticateAsync(txtUserName.Text.Trim(), txtPassword.Text);
 
-			//try
-			//{
-			//	int companyId = 0;
-			//	if (cboCompanies.EditValue != null) companyId = (int)cboCompanies.EditValue;
-			//	CurrentUser.CompanyId = companyId;
+					if (user == null)
+					{
+						XtraMessageBox.Show(@"Username or Password are incorrect! Please try again.", @"Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						txtPassword.Text = string.Empty;
+						txtUserName.Focus();
+						return;
+					}
 
-			//	_userModel = _userRepository.GetUsersByName(txtUserName.Text.Trim(), _isProtected);
+					// Set current user context
+					CurrentUser.UserName = user.Username;
+					CurrentUser.WorkingYear = DateTime.Now.Year;
 
-			//	if (_userModel == null)
-			//	{
-			//		XtraMessageBox.Show(@"Invalid user. Contact your System Administrator.", @"Error Login",
-			//			MessageBoxButtons.OK, MessageBoxIcon.Error);
+					// Persist remembered credentials
+					CheckAndSaveSettings();
 
-			//		return;
-			//	}
-
-			//	SystemUtilities.PasswordHasher = new PasswordHasher();
-
-			//	var newPassword = SystemUtilities.PasswordHasher.HashPassword("david");
-			//	var varGuid = Guid.NewGuid();
-
-			//	var passwordVerificationResult =
-			//		SystemUtilities.PasswordHasher.VerifyHashedPassword(_userModel.PasswordHash, txtPassword.Text);
-
-			//	switch (passwordVerificationResult)
-			//	{
-			//		case PasswordVerificationResult.Failed:
-			//			XtraMessageBox.Show(@"Username or Password are incorrect! Please try again.", @"Error",
-			//				MessageBoxButtons.OK, MessageBoxIcon.Error);
-			//			txtPassword.Text = "";
-			//			txtUserName.Text = "";
-			//			txtUserName.Focus();
-			//			return;
-
-			//		case PasswordVerificationResult.Success:
-
-			//			break;
-
-			//		case PasswordVerificationResult.SuccessRehashNeeded:
-
-			//			break;
-			//	}
-
-			//	CurrentUser.UserId = _userModel.Id;
-
-			//	//TODO: we should assign branch to Company/user or to be selective by permission
-			//	//if (cboCompanies.EditValue != null) CurrentUserModel.BranchId = _branchRepository.SelectBranchByCompanyId(CurrentUserModel.CompanyId);
-			//	if (cboCompanies.EditValue != null)
-			//	{
-			//		CurrentUser.CompanyId = (int)cboCompanies.EditValue;
-			//		CurrentUser.CompanyName = cboCompanies.Text;
-
-			//		BranchModel branchModel = _branchRepository.SelectBranchByCompanyId(CurrentUser.CompanyId);
-			//		if (branchModel != null)
-			//		{
-			//			CurrentUser.BranchId = _branchRepository.SelectBranchByCompanyId(CurrentUser.CompanyId)?.Id;
-			//			CurrentUser.BranchName = _branchRepository.SelectBranchByCompanyId(CurrentUser.CompanyId).Name;
-			//		}
-			//	}
-
-			//	CurrentUser.UserName = _userModel.UserName;
-			//	CurrentUser.WorkingYear = DateTime.Now.Year;
-
-			//	if (_userModel.FirstTimeAccess) ApplyFirstTimeSettings();
-			//	if (_userModel.PermissionChanged) RefreshUserPermission();
-
-			//	CheckAndSaveSettings();
-			//	DialogResult = DialogResult.OK;
-			//}
-			//catch (Exception)
-			//{
-			//	XtraMessageBox.Show(@"Invalid username or password. Please try again.", @"Error Login",
-			//		MessageBoxButtons.OK, MessageBoxIcon.Error);
-			//}
+					DialogResult = DialogResult.OK;
+				}
+			}
+			catch (Exception ex)
+			{
+				XtraMessageBox.Show(ex.Message, @"Error Login", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		private bool ValidateRequiredDataForm()
@@ -201,14 +171,14 @@ namespace SpectrumV1.Views.Users
 				txtPassword.Focus();
 				return false;
 			}
-			if (string.IsNullOrEmpty(cboCompanies.Text))
-			{
-				XtraMessageBox.Show(@"Company cannot be empty! Please try again.", @"Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
+			//if (string.IsNullOrEmpty(cboCompanies.Text))
+			//{
+			//	XtraMessageBox.Show(@"Company cannot be empty! Please try again.", @"Error",
+			//		MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-				cboCompanies.Focus();
-				return false;
-			}
+			//	cboCompanies.Focus();
+			//	return false;
+			//}
 
 			return true;
 		}
@@ -227,20 +197,7 @@ namespace SpectrumV1.Views.Users
 			Close();
 		}
 
-		private void LoginForm_Load(object sender, EventArgs e)
-		{
-			txtUserName.Focus();
-			//txtUserName.Text = string.Empty;
-			//txtPassword.Text = string.Empty;
-			chkSavePassword.Checked = false;
-			cboCompanies.EditValue = Settings.Default.CompanyId;
-			if (Settings.Default.SavePassword)
-			{
-				txtUserName.Text = Settings.Default.UserName;
-				txtPassword.Text = Settings.Default.UserPassword;
-				chkSavePassword.Checked = Settings.Default.SavePassword;
-			}
-		}
+
 		private void ApplyFirstTimeSettings()
 		{
 			//if (_userModel.UserName.ToLower() != "admin") return;

@@ -25,6 +25,13 @@ namespace SpectrumV1.DataLayers.DataUtilities
 			return connectionString;
 		}
 
+		public static string GetDatabaseName()
+		{
+			_connectionModel = DatabaseFactory.ConnectionParamsGet();
+
+			return _connectionModel.DatabaseName;
+		}
+
 		public static DbConnection DataConnection()
 		{
 			switch ((DatabaseTypes)Enum.Parse(typeof(DatabaseTypes), _connectionModel.DatabaseType))

@@ -12,7 +12,7 @@ namespace SpectrumV1.DataLayers.DataAccess
 	public class DatabaseFactory
 	{
 		public static IDatabase Get(string application, string databaseType, string databaseHost, int databasePort,
-			string databaseName, string databaseUser, string databasePassword)	
+			string databaseName, string databaseUser, string databasePassword)
 		{
 			switch ((DatabaseTypes)Enum.Parse(typeof(DatabaseTypes), databaseType))
 			{

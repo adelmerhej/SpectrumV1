@@ -121,6 +121,7 @@
 			this.lnkChangePassword.Size = new System.Drawing.Size(102, 16);
 			this.lnkChangePassword.TabIndex = 54;
 			this.lnkChangePassword.Text = "Change Password";
+			this.lnkChangePassword.Click += new System.EventHandler(this.lnkChangePassword_Click);
 			// 
 			// lnkHelp
 			// 
@@ -239,6 +240,7 @@
 			this.tablePanel1.SetRow(this.cboCompanies, 2);
 			this.cboCompanies.Size = new System.Drawing.Size(312, 22);
 			this.cboCompanies.TabIndex = 2;
+			this.cboCompanies.EditValueChanged += new System.EventHandler(this.cboCompanies_EditValueChanged);
 			// 
 			// lblCompaniesList
 			// 
@@ -295,6 +297,8 @@
 			this.txtPassword.Properties.PasswordChar = '*';
 			this.txtPassword.Size = new System.Drawing.Size(312, 25);
 			this.txtPassword.TabIndex = 1;
+			this.txtPassword.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.txtPassword_ButtonClick);
+			this.txtPassword.MouseLeave += new System.EventHandler(this.txtPassword_MouseLeave);
 			// 
 			// picLogo
 			// 
@@ -331,6 +335,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Login";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoginForm_FormClosing);
+			this.Load += new System.EventHandler(this.LoginForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.behaviorManager1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.tablePanel1)).EndInit();
 			this.tablePanel1.ResumeLayout(false);

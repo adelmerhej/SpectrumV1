@@ -1,10 +1,12 @@
-﻿using SpectrumV1.Models;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 
 namespace SpectrumV1.Models.Common.Companies
 {
 	public class BranchModel : EntityObject, ICloneable
 	{
+		[BsonElement("Name")]
 		public string Name { get; set; }
 
 
@@ -14,8 +16,8 @@ namespace SpectrumV1.Models.Common.Companies
 		/// <returns>A new object that is a copy of this instance.</returns>
 		public object Clone()
 		{
-			var companyModel = (BranchModel)MemberwiseClone();
-			return companyModel;
+			var recordModel = (BranchModel)MemberwiseClone();
+			return recordModel;
 		}
 
 		#endregion
