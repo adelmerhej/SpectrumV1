@@ -79,7 +79,26 @@ namespace SpectrumV1.Views.Main.Connections
 
 		private void btnTest_Click(object sender, System.EventArgs e)
 		{
-			Close();
+			try
+			{
+				//test connection
+				bool isConnected = DatabaseFactory.TestDatabaseConnection(txtConnectionString.Text.Trim(), txtDatabase.Text.Trim());
+
+				if (isConnected)
+				{
+					XtraMessageBox.Show("Connection Successful!", "Connection Test", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
+				else
+				{
+					XtraMessageBox.Show("Connection Failed!", "Connection Test", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+			catch (Exception ex)
+			{
+				//log error
+				XtraMessageBox.Show(ex.Message, @"Connection Test", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+
 		}
 
 		private void txtPassword_ButtonClick(object sender, ButtonPressedEventArgs e)
@@ -92,6 +111,53 @@ namespace SpectrumV1.Views.Main.Connections
 		{
 			ButtonEdit edit = sender as ButtonEdit;
 			if (edit != null) edit.Properties.PasswordChar = edit.Properties.PasswordChar = '*';
+		}
+
+		private void txtHost_EditValueChanged(object sender, EventArgs e)
+		{
+			BuildAndUpdateConnectionString();
+		}
+
+
+		private void BuildAndUpdateConnectionString()
+		{
+			int.TryParse(txtPort.Text, out var result);
+			var host = string.IsNullOrWhiteSpace(txtHost.Text) ? "localhost" : txtHost.Text.Trim();
+			var port = result == 0 ? 27017 : result;
+			var database = string.IsNullOrWhiteSpace(txtDatabase.Text) ? "spectrumdb" : txtDatabase.Text.Trim();
+			var username = txtUsername.Text.Trim();
+			var password = txtPassword.Text;
+			string connectionString;
+			if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+			{
+				connectionString = $"mongodb://{username}:{password}@{host}:{port}/{database}?authSource={_authDb}";
+			}
+			else
+			{
+				connectionString = $"mongodb://{host}:{port}/{database}";
+			}
+			txtConnectionString.Text = connectionString;
+
+		}
+
+		private void txtPort_EditValueChanged(object sender, EventArgs e)
+		{
+			BuildAndUpdateConnectionString();
+		}
+
+		private void txtDatabase_EditValueChanged(object sender, EventArgs e)
+		{
+			BuildAndUpdateConnectionString();
+		}
+
+		private void txtUsername_EditValueChanged(object sender, EventArgs e)
+		{
+			BuildAndUpdateConnectionString();
+		}
+
+		private void txtPassword_EditValueChanged(object sender, EventArgs e)
+		{
+			BuildAndUpdateConnectionString();
 		}
 	}
 }

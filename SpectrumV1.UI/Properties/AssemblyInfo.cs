@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SSM V1")]
 [assembly: AssemblyDescription("Spectrum Software Management First Version V1 (SSM V1)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Vision^n")]
+[assembly: AssemblyCompany("Spectrum")]
 [assembly: AssemblyProduct("Spectrum Software Management V1")]
 [assembly: AssemblyCopyright("Copyright © Vision^n 2026")]
 [assembly: AssemblyTrademark("")]
@@ -30,4 +30,4 @@ using System.Runtime.InteropServices;
 //      Revision
 //
 [assembly: AssemblyVersion("4.7.2.1")]
-[assembly: AssemblyFileVersion("1.0.1.8")]
+[assembly: AssemblyFileVersion("1.0.1.12")]

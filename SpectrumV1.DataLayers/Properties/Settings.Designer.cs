@@ -49,7 +49,7 @@ namespace SpectrumV1.DataLayers.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3306")]
+        [global::System.Configuration.DefaultSettingValueAttribute("27017")]
         public int DatabasePort {
             get {
                 return ((int)(this["DatabasePort"]));

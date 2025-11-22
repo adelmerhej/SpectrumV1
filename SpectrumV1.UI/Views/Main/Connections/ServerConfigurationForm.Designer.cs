@@ -52,9 +52,9 @@
 			this.lblPort = new DevExpress.XtraEditors.LabelControl();
 			this.lblHost = new DevExpress.XtraEditors.LabelControl();
 			this.txtPort = new DevExpress.XtraEditors.SpinEdit();
+			this.txtPassword = new DevExpress.XtraEditors.ButtonEdit();
 			this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
 			this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-			this.txtPassword = new DevExpress.XtraEditors.ButtonEdit();
 			((System.ComponentModel.ISupportInitialize)(this.mainLayout)).BeginInit();
 			this.mainLayout.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tablePanel1)).BeginInit();
@@ -64,9 +64,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.txtDatabase.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.txtHost.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.txtPort.Properties)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.txtPassword.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.txtPassword.Properties)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// mainLayout
@@ -206,6 +206,7 @@
 			this.tablePanel1.SetRow(this.txtUsername, 3);
 			this.txtUsername.Size = new System.Drawing.Size(463, 22);
 			this.txtUsername.TabIndex = 9;
+			this.txtUsername.EditValueChanged += new System.EventHandler(this.txtUsername_EditValueChanged);
 			// 
 			// txtDatabase
 			// 
@@ -216,6 +217,7 @@
 			this.tablePanel1.SetRow(this.txtDatabase, 2);
 			this.txtDatabase.Size = new System.Drawing.Size(463, 22);
 			this.txtDatabase.TabIndex = 8;
+			this.txtDatabase.EditValueChanged += new System.EventHandler(this.txtDatabase_EditValueChanged);
 			// 
 			// txtHost
 			// 
@@ -226,6 +228,7 @@
 			this.tablePanel1.SetRow(this.txtHost, 0);
 			this.txtHost.Size = new System.Drawing.Size(463, 22);
 			this.txtHost.TabIndex = 6;
+			this.txtHost.EditValueChanged += new System.EventHandler(this.txtHost_EditValueChanged);
 			// 
 			// lblConnectionString
 			// 
@@ -305,6 +308,22 @@
 			this.tablePanel1.SetRow(this.txtPort, 1);
 			this.txtPort.Size = new System.Drawing.Size(75, 24);
 			this.txtPort.TabIndex = 7;
+			this.txtPort.EditValueChanged += new System.EventHandler(this.txtPort_EditValueChanged);
+			// 
+			// txtPassword
+			// 
+			this.txtPassword.Location = new System.Drawing.Point(128, 118);
+			this.txtPassword.Name = "txtPassword";
+			editorButtonImageOptions1.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("editorButtonImageOptions1.SvgImage")));
+			editorButtonImageOptions1.SvgImageSize = new System.Drawing.Size(12, 12);
+			this.txtPassword.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "", -1, true, true, false, editorButtonImageOptions1, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject1, serializableAppearanceObject2, serializableAppearanceObject3, serializableAppearanceObject4, "", null, null, DevExpress.Utils.ToolTipAnchor.Default)});
+			this.txtPassword.Properties.PasswordChar = '*';
+			this.txtPassword.Size = new System.Drawing.Size(463, 25);
+			this.txtPassword.TabIndex = 10;
+			this.txtPassword.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.txtPassword_ButtonClick);
+			this.txtPassword.EditValueChanged += new System.EventHandler(this.txtPassword_EditValueChanged);
+			this.txtPassword.MouseLeave += new System.EventHandler(this.txtPassword_MouseLeave);
 			// 
 			// Root
 			// 
@@ -323,20 +342,6 @@
 			this.layoutControlItem1.Name = "layoutControlItem1";
 			this.layoutControlItem1.Size = new System.Drawing.Size(610, 382);
 			this.layoutControlItem1.TextVisible = false;
-			// 
-			// txtPassword
-			// 
-			this.txtPassword.Location = new System.Drawing.Point(128, 118);
-			this.txtPassword.Name = "txtPassword";
-			editorButtonImageOptions1.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("editorButtonImageOptions1.SvgImage")));
-			editorButtonImageOptions1.SvgImageSize = new System.Drawing.Size(12, 12);
-			this.txtPassword.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph, "", -1, true, true, false, editorButtonImageOptions1, new DevExpress.Utils.KeyShortcut(System.Windows.Forms.Keys.None), serializableAppearanceObject1, serializableAppearanceObject2, serializableAppearanceObject3, serializableAppearanceObject4, "", null, null, DevExpress.Utils.ToolTipAnchor.Default)});
-			this.txtPassword.Properties.PasswordChar = '*';
-			this.txtPassword.Size = new System.Drawing.Size(463, 25);
-			this.txtPassword.TabIndex = 10;
-			this.txtPassword.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.txtPassword_ButtonClick);
-			this.txtPassword.MouseLeave += new System.EventHandler(this.txtPassword_MouseLeave);
 			// 
 			// ServerConfigurationForm
 			// 
@@ -364,9 +369,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.txtDatabase.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.txtHost.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.txtPort.Properties)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.txtPassword.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.txtPassword.Properties)).EndInit();
 			this.ResumeLayout(false);
 
 		}

@@ -9,7 +9,7 @@
       <Value Profile="(Default)">44368</Value>
     </Setting>
     <Setting Name="DatabasePort" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">3306</Value>
+      <Value Profile="(Default)">27017</Value>
     </Setting>
     <Setting Name="DatabaseName" Type="System.String" Scope="User">
       <Value Profile="(Default)">spectrumdb</Value>
