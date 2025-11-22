@@ -66,6 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BusinessLogic\Users\LoginService.cs" />
     <Compile Include="Utilities\HelperApplication.cs" />
+    <Compile Include="Utilities\Interfaces\IFormWithRibbon.cs" />
     <Compile Include="Utilities\LogInfoRepository.cs" />
     <Compile Include="Views\Main\AboutForm.cs">
       <SubType>Form</SubType>
@@ -115,6 +116,18 @@
     <Compile Include="Views\Users\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Users\UserEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Users\UserEditForm.Designer.cs">
+      <DependentUpon>UserEditForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Users\UsersListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Users\UsersListForm.Designer.cs">
+      <DependentUpon>UsersListForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -149,6 +162,13 @@
     <EmbeddedResource Include="Views\Users\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\Users\UserEditForm.resx">
+      <DependentUpon>UserEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Users\UsersListForm.resx">
+      <DependentUpon>UsersListForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\DataSources\SpectrumV1.Models.Users.UserModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -216,9 +236,7 @@
   <ItemGroup>
     <None Include="Resources\professor.svg" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utilities\Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\SpectrumV1.DataLayers\SpectrumV1.DataLayers.csproj">
       <Project>{c358f497-16b5-42ca-8c46-6fead2528018}</Project>

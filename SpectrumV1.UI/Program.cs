@@ -87,7 +87,7 @@ namespace SpectrumV1
 				{
 					Title = "When Only The Best Will Do",
 					Subtitle = Settings.Default.ApplicationName,
-					LeftFooter = $"Copyright © {DateTime.Now.Year} {Settings.Default.CompanyName}{Environment.NewLine}All Rights Reserved.",
+					LeftFooter = $"Copyright © {DateTime.Now.Year} Spectrum sarl {Environment.NewLine}All Rights Reserved.",
 					RightFooter = "Starting...",
 					LoadingIndicatorType = FluentLoadingIndicatorType.Dots,
 					OpacityColor = Color.FromArgb(16, 110, 190),

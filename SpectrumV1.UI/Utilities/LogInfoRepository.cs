@@ -1,5 +1,6 @@
 ﻿using SpectrumV1.Models;
 using SpectrumV1.Models.Users;
+using System;
 
 namespace SpectrumV1.Utilities
 {
@@ -9,6 +10,7 @@ namespace SpectrumV1.Utilities
 		public void CreateLogInfo<T>(T obj) where T : EntityObject
 		{
 			obj.CreatedBy = CurrentUser.UserName;
+			obj.CreatedAt = DateTime.UtcNow;
 			obj.Company = CurrentUser.Company;
 			obj.Branch = CurrentUser.Branch;
 		}
@@ -16,6 +18,7 @@ namespace SpectrumV1.Utilities
 		public void UpdateLogInfo<T>(T obj) where T : EntityObject
 		{
 			obj.LastModifiedBy = CurrentUser.UserName;
+			obj.LastModifiedDate = DateTime.UtcNow;
 			obj.Company = CurrentUser.Company;
 			obj.Branch = CurrentUser.Branch;
 		}

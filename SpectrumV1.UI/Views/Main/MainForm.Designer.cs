@@ -39,27 +39,39 @@
 			this.btnRefresh = new DevExpress.XtraBars.BarButtonItem();
 			this.btnExit = new DevExpress.XtraBars.BarButtonItem();
 			this.btnAbout = new DevExpress.XtraBars.BarButtonItem();
-			this.btnResetLayout = new DevExpress.XtraBars.BarButtonItem();
-			this.statusHost = new DevExpress.XtraBars.BarStaticItem();
-			this.statusAppName = new DevExpress.XtraBars.BarStaticItem();
-			this.statusVersion = new DevExpress.XtraBars.BarStaticItem();
-			this.statusSpace1 = new DevExpress.XtraBars.BarStaticItem();
 			this.statusCompanyName = new DevExpress.XtraBars.BarStaticItem();
 			this.statusUserName = new DevExpress.XtraBars.BarStaticItem();
 			this.statusDate = new DevExpress.XtraBars.BarStaticItem();
+			this.statusAppName = new DevExpress.XtraBars.BarStaticItem();
+			this.btnResetLayout = new DevExpress.XtraBars.BarButtonItem();
 			this.skinRibbonGalleryBarItem1 = new DevExpress.XtraBars.SkinRibbonGalleryBarItem();
 			this.skinPaletteRibbonGalleryBarItem1 = new DevExpress.XtraBars.SkinPaletteRibbonGalleryBarItem();
+			this.statusHost = new DevExpress.XtraBars.BarStaticItem();
+			this.statusVersion = new DevExpress.XtraBars.BarStaticItem();
+			this.statusSpace1 = new DevExpress.XtraBars.BarStaticItem();
+			this.statusDatabase = new DevExpress.XtraBars.BarStaticItem();
 			this.btnLiveUpdate = new DevExpress.XtraBars.BarButtonItem();
 			this.rpHome = new DevExpress.XtraBars.Ribbon.RibbonPage();
 			this.rpgDashboard = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-			this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+			this.ribbonPageGroup3 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
 			this.rpgAbout = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
 			this.rpgExit = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-			this.rpgView = new DevExpress.XtraBars.Ribbon.RibbonPage();
+			this.rpgMainView = new DevExpress.XtraBars.Ribbon.RibbonPage();
 			this.rpgsettings = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
 			this.rpgAppearance = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
 			this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-			this.ribbonStatusBar1 = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
+			this.ribbonStatusBar = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
+			this.barStaticItem1 = new DevExpress.XtraBars.BarStaticItem();
+			this.barStaticItem2 = new DevExpress.XtraBars.BarStaticItem();
+			this.barStaticItem3 = new DevExpress.XtraBars.BarStaticItem();
+			this.barStaticItem4 = new DevExpress.XtraBars.BarStaticItem();
+			this.barStaticItem5 = new DevExpress.XtraBars.BarStaticItem();
+			this.barStaticItem6 = new DevExpress.XtraBars.BarStaticItem();
+			this.barStaticItem7 = new DevExpress.XtraBars.BarStaticItem();
+			this.barStaticItem8 = new DevExpress.XtraBars.BarStaticItem();
+			this.documentManager1 = new DevExpress.XtraBars.Docking2010.DocumentManager(this.components);
+			this.tabbedView1 = new DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView(this.components);
+			this.defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
 			this.mainMenu = new DevExpress.XtraBars.Navigation.AccordionControl();
 			this.mnuNavigationMenu = new DevExpress.XtraBars.Navigation.AccordionControlElement();
 			this.mnuDashboard = new DevExpress.XtraBars.Navigation.AccordionControlElement();
@@ -129,24 +141,19 @@
 			this.grpReadingPane = new DevExpress.XtraBars.Navigation.AccordionControlElement();
 			this.dockRight = new DevExpress.XtraBars.Navigation.AccordionControlElement();
 			this.showPendingJobs = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-			this.accordionControlSeparator3 = new DevExpress.XtraBars.Navigation.AccordionControlSeparator();
-			this.closeGeneralSettings = new DevExpress.XtraBars.Navigation.AccordionControlElement();
-			this.defaultLookAndFeel1 = new DevExpress.LookAndFeel.DefaultLookAndFeel(this.components);
-			this.documentManager1 = new DevExpress.XtraBars.Docking2010.DocumentManager(this.components);
-			this.tabbedView1 = new DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.ribbonMainForm)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.documentManager1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.mainMenu)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.accordionSettings)).BeginInit();
 			this.accordionSettings.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tsRight.Properties)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tsViewPendingJobs.Properties)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.documentManager1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// ribbonMainForm
 			// 
-			this.ribbonMainForm.EmptyAreaImageOptions.ImagePadding = new System.Windows.Forms.Padding(37, 39, 37, 39);
+			this.ribbonMainForm.EmptyAreaImageOptions.ImagePadding = new System.Windows.Forms.Padding(46, 49, 46, 49);
 			this.ribbonMainForm.ExpandCollapseItem.Id = 0;
 			this.ribbonMainForm.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
             this.ribbonMainForm.ExpandCollapseItem,
@@ -158,29 +165,30 @@
             this.btnRefresh,
             this.btnExit,
             this.btnAbout,
-            this.btnResetLayout,
-            this.statusHost,
-            this.statusAppName,
-            this.statusVersion,
-            this.statusSpace1,
             this.statusCompanyName,
             this.statusUserName,
             this.statusDate,
+            this.statusAppName,
+            this.btnResetLayout,
             this.skinRibbonGalleryBarItem1,
             this.skinPaletteRibbonGalleryBarItem1,
+            this.statusHost,
+            this.statusVersion,
+            this.statusSpace1,
+            this.statusDatabase,
             this.btnLiveUpdate});
 			this.ribbonMainForm.Location = new System.Drawing.Point(0, 0);
-			this.ribbonMainForm.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.ribbonMainForm.MaxItemId = 86;
+			this.ribbonMainForm.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.ribbonMainForm.MaxItemId = 71;
 			this.ribbonMainForm.MdiMergeStyle = DevExpress.XtraBars.Ribbon.RibbonMdiMergeStyle.Always;
 			this.ribbonMainForm.Name = "ribbonMainForm";
-			this.ribbonMainForm.OptionsMenuMinWidth = 412;
+			this.ribbonMainForm.OptionsMenuMinWidth = 515;
 			this.ribbonMainForm.PageHeaderItemLinks.Add(this.btnEnd);
 			this.ribbonMainForm.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.rpHome,
-            this.rpgView});
+            this.rpgMainView});
 			this.ribbonMainForm.Size = new System.Drawing.Size(1441, 193);
-			this.ribbonMainForm.StatusBar = this.ribbonStatusBar1;
+			this.ribbonMainForm.StatusBar = this.ribbonStatusBar;
 			// 
 			// barFolderPaneSubItem
 			// 
@@ -244,6 +252,30 @@
 			this.btnAbout.Name = "btnAbout";
 			this.btnAbout.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnAbout_ItemClick);
 			// 
+			// statusCompanyName
+			// 
+			this.statusCompanyName.Caption = "Company Name:";
+			this.statusCompanyName.Id = 48;
+			this.statusCompanyName.Name = "statusCompanyName";
+			// 
+			// statusUserName
+			// 
+			this.statusUserName.Caption = "UserName:";
+			this.statusUserName.Id = 49;
+			this.statusUserName.Name = "statusUserName";
+			// 
+			// statusDate
+			// 
+			this.statusDate.Caption = "Today:";
+			this.statusDate.Id = 50;
+			this.statusDate.Name = "statusDate";
+			// 
+			// statusAppName
+			// 
+			this.statusAppName.Caption = "Application: ";
+			this.statusAppName.Id = 51;
+			this.statusAppName.Name = "statusAppName";
+			// 
 			// btnResetLayout
 			// 
 			this.btnResetLayout.Caption = "Reset Menu Layout";
@@ -252,64 +284,46 @@
 			this.btnResetLayout.Name = "btnResetLayout";
 			this.btnResetLayout.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnResetLayout_ItemClick);
 			// 
-			// statusHost
-			// 
-			this.statusHost.Caption = "Host:";
-			this.statusHost.Id = 76;
-			this.statusHost.Name = "statusHost";
-			// 
-			// statusAppName
-			// 
-			this.statusAppName.Caption = "Application: ";
-			this.statusAppName.Id = 77;
-			this.statusAppName.Name = "statusAppName";
-			// 
-			// statusVersion
-			// 
-			this.statusVersion.Caption = "App Version:";
-			this.statusVersion.Id = 78;
-			this.statusVersion.Name = "statusVersion";
-			// 
-			// statusSpace1
-			// 
-			this.statusSpace1.Id = 79;
-			this.statusSpace1.Name = "statusSpace1";
-			this.statusSpace1.Width = 20;
-			// 
-			// statusCompanyName
-			// 
-			this.statusCompanyName.Caption = "Company Name:";
-			this.statusCompanyName.Id = 80;
-			this.statusCompanyName.Name = "statusCompanyName";
-			// 
-			// statusUserName
-			// 
-			this.statusUserName.Caption = "UserName:";
-			this.statusUserName.Id = 81;
-			this.statusUserName.Name = "statusUserName";
-			// 
-			// statusDate
-			// 
-			this.statusDate.Caption = "Today:";
-			this.statusDate.Id = 82;
-			this.statusDate.Name = "statusDate";
-			// 
 			// skinRibbonGalleryBarItem1
 			// 
 			this.skinRibbonGalleryBarItem1.Caption = "skinRibbonGalleryBarItem1";
-			this.skinRibbonGalleryBarItem1.Id = 83;
+			this.skinRibbonGalleryBarItem1.Id = 55;
 			this.skinRibbonGalleryBarItem1.Name = "skinRibbonGalleryBarItem1";
 			// 
 			// skinPaletteRibbonGalleryBarItem1
 			// 
 			this.skinPaletteRibbonGalleryBarItem1.Caption = "skinPaletteRibbonGalleryBarItem1";
-			this.skinPaletteRibbonGalleryBarItem1.Id = 84;
+			this.skinPaletteRibbonGalleryBarItem1.Id = 56;
 			this.skinPaletteRibbonGalleryBarItem1.Name = "skinPaletteRibbonGalleryBarItem1";
+			// 
+			// statusHost
+			// 
+			this.statusHost.Caption = "Host:";
+			this.statusHost.Id = 57;
+			this.statusHost.Name = "statusHost";
+			// 
+			// statusVersion
+			// 
+			this.statusVersion.Caption = "App Version:";
+			this.statusVersion.Id = 58;
+			this.statusVersion.Name = "statusVersion";
+			// 
+			// statusSpace1
+			// 
+			this.statusSpace1.Id = 60;
+			this.statusSpace1.Name = "statusSpace1";
+			this.statusSpace1.Width = 20;
+			// 
+			// statusDatabase
+			// 
+			this.statusDatabase.Caption = "Database:";
+			this.statusDatabase.Id = 69;
+			this.statusDatabase.Name = "statusDatabase";
 			// 
 			// btnLiveUpdate
 			// 
-			this.btnLiveUpdate.Caption = "Check for Update";
-			this.btnLiveUpdate.Id = 85;
+			this.btnLiveUpdate.Caption = "Check for Updates";
+			this.btnLiveUpdate.Id = 70;
 			this.btnLiveUpdate.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("btnLiveUpdate.ImageOptions.SvgImage")));
 			this.btnLiveUpdate.Name = "btnLiveUpdate";
 			this.btnLiveUpdate.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnLiveUpdate_ItemClick);
@@ -318,7 +332,7 @@
 			// 
 			this.rpHome.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
             this.rpgDashboard,
-            this.ribbonPageGroup2,
+            this.ribbonPageGroup3,
             this.rpgAbout,
             this.rpgExit});
 			this.rpHome.Name = "rpHome";
@@ -330,12 +344,12 @@
 			this.rpgDashboard.Name = "rpgDashboard";
 			this.rpgDashboard.Text = "Dashboard Refresh";
 			// 
-			// ribbonPageGroup2
+			// ribbonPageGroup3
 			// 
-			this.ribbonPageGroup2.Alignment = DevExpress.XtraBars.Ribbon.RibbonPageGroupAlignment.Far;
-			this.ribbonPageGroup2.ItemLinks.Add(this.btnLiveUpdate);
-			this.ribbonPageGroup2.Name = "ribbonPageGroup2";
-			this.ribbonPageGroup2.Text = "Live update";
+			this.ribbonPageGroup3.Alignment = DevExpress.XtraBars.Ribbon.RibbonPageGroupAlignment.Far;
+			this.ribbonPageGroup3.ItemLinks.Add(this.btnLiveUpdate);
+			this.ribbonPageGroup3.Name = "ribbonPageGroup3";
+			this.ribbonPageGroup3.Text = "Updates";
 			// 
 			// rpgAbout
 			// 
@@ -352,14 +366,14 @@
 			this.rpgExit.Name = "rpgExit";
 			this.rpgExit.Text = "Exit";
 			// 
-			// rpgView
+			// rpgMainView
 			// 
-			this.rpgView.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+			this.rpgMainView.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
             this.rpgsettings,
             this.rpgAppearance,
             this.ribbonPageGroup1});
-			this.rpgView.Name = "rpgView";
-			this.rpgView.Text = "VIEW";
+			this.rpgMainView.Name = "rpgMainView";
+			this.rpgMainView.Text = "MAIN VIEW";
 			// 
 			// rpgsettings
 			// 
@@ -380,12 +394,78 @@
 			this.ribbonPageGroup1.Name = "ribbonPageGroup1";
 			this.ribbonPageGroup1.Text = "Reset Menu";
 			// 
-			// ribbonStatusBar1
+			// ribbonStatusBar
 			// 
-			this.ribbonStatusBar1.Location = new System.Drawing.Point(0, 759);
-			this.ribbonStatusBar1.Name = "ribbonStatusBar1";
-			this.ribbonStatusBar1.Ribbon = this.ribbonMainForm;
-			this.ribbonStatusBar1.Size = new System.Drawing.Size(1441, 30);
+			this.ribbonStatusBar.ItemLinks.Add(this.barStaticItem1);
+			this.ribbonStatusBar.ItemLinks.Add(this.barStaticItem2);
+			this.ribbonStatusBar.ItemLinks.Add(this.barStaticItem3);
+			this.ribbonStatusBar.ItemLinks.Add(this.barStaticItem4);
+			this.ribbonStatusBar.ItemLinks.Add(this.barStaticItem5);
+			this.ribbonStatusBar.ItemLinks.Add(this.barStaticItem6);
+			this.ribbonStatusBar.ItemLinks.Add(this.barStaticItem7);
+			this.ribbonStatusBar.ItemLinks.Add(this.barStaticItem8);
+			this.ribbonStatusBar.Location = new System.Drawing.Point(0, 759);
+			this.ribbonStatusBar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.ribbonStatusBar.Name = "ribbonStatusBar";
+			this.ribbonStatusBar.Ribbon = this.ribbonMainForm;
+			this.ribbonStatusBar.Size = new System.Drawing.Size(1441, 30);
+			// 
+			// barStaticItem1
+			// 
+			this.barStaticItem1.Caption = "Host:";
+			this.barStaticItem1.Id = 57;
+			this.barStaticItem1.Name = "barStaticItem1";
+			// 
+			// barStaticItem2
+			// 
+			this.barStaticItem2.Caption = "Database:";
+			this.barStaticItem2.Id = 69;
+			this.barStaticItem2.Name = "barStaticItem2";
+			// 
+			// barStaticItem3
+			// 
+			this.barStaticItem3.Caption = "Application: ";
+			this.barStaticItem3.Id = 51;
+			this.barStaticItem3.Name = "barStaticItem3";
+			// 
+			// barStaticItem4
+			// 
+			this.barStaticItem4.Caption = "App Version:";
+			this.barStaticItem4.Id = 58;
+			this.barStaticItem4.Name = "barStaticItem4";
+			// 
+			// barStaticItem5
+			// 
+			this.barStaticItem5.Id = 60;
+			this.barStaticItem5.Name = "barStaticItem5";
+			this.barStaticItem5.Size = new System.Drawing.Size(20, 0);
+			this.barStaticItem5.Width = 20;
+			// 
+			// barStaticItem6
+			// 
+			this.barStaticItem6.Caption = "Company Name:";
+			this.barStaticItem6.Id = 48;
+			this.barStaticItem6.Name = "barStaticItem6";
+			// 
+			// barStaticItem7
+			// 
+			this.barStaticItem7.Caption = "UserName:";
+			this.barStaticItem7.Id = 49;
+			this.barStaticItem7.Name = "barStaticItem7";
+			// 
+			// barStaticItem8
+			// 
+			this.barStaticItem8.Caption = "Today:";
+			this.barStaticItem8.Id = 50;
+			this.barStaticItem8.Name = "barStaticItem8";
+			// 
+			// documentManager1
+			// 
+			this.documentManager1.MdiParent = this;
+			this.documentManager1.MenuManager = this.ribbonMainForm;
+			this.documentManager1.View = this.tabbedView1;
+			this.documentManager1.ViewCollection.AddRange(new DevExpress.XtraBars.Docking2010.Views.BaseView[] {
+            this.tabbedView1});
 			// 
 			// mainMenu
 			// 
@@ -757,6 +837,7 @@
 			this.mnuUsersList.Name = "mnuUsersList";
 			this.mnuUsersList.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
 			this.mnuUsersList.Text = "Users";
+			this.mnuUsersList.Click += new System.EventHandler(this.mnuUsersList_Click);
 			// 
 			// mnuCommon
 			// 
@@ -904,32 +985,33 @@
             this.grpSettings,
             this.grpReadingPane});
 			this.accordionSettings.ExpandGroupOnHeaderClick = false;
-			this.accordionSettings.Location = new System.Drawing.Point(1146, 193);
-			this.accordionSettings.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+			this.accordionSettings.Location = new System.Drawing.Point(1093, 193);
+			this.accordionSettings.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
 			this.accordionSettings.Name = "accordionSettings";
 			this.accordionSettings.ShowGroupExpandButtons = false;
-			this.accordionSettings.Size = new System.Drawing.Size(295, 566);
-			this.accordionSettings.TabIndex = 57;
+			this.accordionSettings.Size = new System.Drawing.Size(348, 566);
+			this.accordionSettings.TabIndex = 55;
 			this.accordionSettings.Visible = false;
 			// 
 			// tsRight
 			// 
-			this.tsRight.Location = new System.Drawing.Point(122, 247);
-			this.tsRight.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+			this.tsRight.Location = new System.Drawing.Point(140, 247);
+			this.tsRight.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
 			this.tsRight.Name = "tsRight";
 			this.tsRight.Properties.OffText = "Off";
 			this.tsRight.Properties.OnText = "On";
-			this.tsRight.Size = new System.Drawing.Size(139, 24);
+			this.tsRight.Size = new System.Drawing.Size(174, 24);
 			this.tsRight.TabIndex = 3;
 			// 
 			// tsViewPendingJobs
 			// 
-			this.tsViewPendingJobs.Location = new System.Drawing.Point(166, 281);
+			this.tsViewPendingJobs.Location = new System.Drawing.Point(195, 281);
+			this.tsViewPendingJobs.Margin = new System.Windows.Forms.Padding(4);
 			this.tsViewPendingJobs.MenuManager = this.ribbonMainForm;
 			this.tsViewPendingJobs.Name = "tsViewPendingJobs";
 			this.tsViewPendingJobs.Properties.OffText = "Off";
 			this.tsViewPendingJobs.Properties.OnText = "On";
-			this.tsViewPendingJobs.Size = new System.Drawing.Size(95, 24);
+			this.tsViewPendingJobs.Size = new System.Drawing.Size(119, 24);
 			this.tsViewPendingJobs.TabIndex = 5;
 			// 
 			// grpSettings
@@ -988,9 +1070,7 @@
 			// 
 			this.grpReadingPane.Elements.AddRange(new DevExpress.XtraBars.Navigation.AccordionControlElement[] {
             this.dockRight,
-            this.showPendingJobs,
-            this.accordionControlSeparator3,
-            this.closeGeneralSettings});
+            this.showPendingJobs});
 			this.grpReadingPane.Expanded = true;
 			this.grpReadingPane.Name = "grpReadingPane";
 			this.grpReadingPane.Text = "Reading Pane";
@@ -1009,24 +1089,6 @@
 			this.showPendingJobs.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
 			this.showPendingJobs.Text = "Show Pending Jobs";
 			// 
-			// accordionControlSeparator3
-			// 
-			this.accordionControlSeparator3.Name = "accordionControlSeparator3";
-			// 
-			// closeGeneralSettings
-			// 
-			this.closeGeneralSettings.Name = "closeGeneralSettings";
-			this.closeGeneralSettings.Style = DevExpress.XtraBars.Navigation.ElementStyle.Item;
-			this.closeGeneralSettings.Text = "Close";
-			// 
-			// documentManager1
-			// 
-			this.documentManager1.ContainerControl = this;
-			this.documentManager1.MenuManager = this.ribbonMainForm;
-			this.documentManager1.View = this.tabbedView1;
-			this.documentManager1.ViewCollection.AddRange(new DevExpress.XtraBars.Docking2010.Views.BaseView[] {
-            this.tabbedView1});
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -1034,29 +1096,34 @@
 			this.ClientSize = new System.Drawing.Size(1441, 789);
 			this.Controls.Add(this.accordionSettings);
 			this.Controls.Add(this.mainMenu);
-			this.Controls.Add(this.ribbonStatusBar1);
+			this.Controls.Add(this.ribbonStatusBar);
 			this.Controls.Add(this.ribbonMainForm);
+			this.IsMdiContainer = true;
 			this.Name = "MainForm";
 			this.Ribbon = this.ribbonMainForm;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.StatusBar = this.ribbonStatusBar1;
+			this.StatusBar = this.ribbonStatusBar;
 			this.Text = "Dashboard";
 			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+			this.Activated += new System.EventHandler(this.MainForm_Activated);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.Load += new System.EventHandler(this.MainForm_Load);
+			this.MdiChildActivate += new System.EventHandler(this.MainForm_MdiChildActivate);
 			((System.ComponentModel.ISupportInitialize)(this.ribbonMainForm)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.documentManager1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.mainMenu)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.accordionSettings)).EndInit();
 			this.accordionSettings.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.tsRight.Properties)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.tsViewPendingJobs.Properties)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.documentManager1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.tabbedView1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
 		}
 
 		#endregion
+
 		public DevExpress.XtraBars.Ribbon.RibbonControl ribbonMainForm;
 		private DevExpress.XtraBars.BarSubItem barFolderPaneSubItem;
 		private DevExpress.XtraBars.BarButtonItem btnNormalView;
@@ -1066,27 +1133,39 @@
 		private DevExpress.XtraBars.BarButtonItem btnRefresh;
 		private DevExpress.XtraBars.BarButtonItem btnExit;
 		private DevExpress.XtraBars.BarButtonItem btnAbout;
-		private DevExpress.XtraBars.BarButtonItem btnResetLayout;
-		private DevExpress.XtraBars.BarStaticItem statusHost;
-		private DevExpress.XtraBars.BarStaticItem statusAppName;
-		private DevExpress.XtraBars.BarStaticItem statusVersion;
-		private DevExpress.XtraBars.BarStaticItem statusSpace1;
 		private DevExpress.XtraBars.BarStaticItem statusCompanyName;
 		private DevExpress.XtraBars.BarStaticItem statusUserName;
 		private DevExpress.XtraBars.BarStaticItem statusDate;
+		private DevExpress.XtraBars.BarStaticItem statusAppName;
+		private DevExpress.XtraBars.BarButtonItem btnResetLayout;
 		private DevExpress.XtraBars.SkinRibbonGalleryBarItem skinRibbonGalleryBarItem1;
 		private DevExpress.XtraBars.SkinPaletteRibbonGalleryBarItem skinPaletteRibbonGalleryBarItem1;
+		private DevExpress.XtraBars.BarStaticItem statusHost;
+		private DevExpress.XtraBars.BarStaticItem statusVersion;
+		private DevExpress.XtraBars.BarStaticItem statusSpace1;
+		private DevExpress.XtraBars.BarStaticItem statusDatabase;
+		private DevExpress.XtraBars.BarButtonItem btnLiveUpdate;
 		private DevExpress.XtraBars.Ribbon.RibbonPage rpHome;
 		private DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgDashboard;
+		private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup3;
 		private DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgAbout;
 		private DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgExit;
-		private DevExpress.XtraBars.Ribbon.RibbonPage rpgView;
+		private DevExpress.XtraBars.Ribbon.RibbonPage rpgMainView;
 		private DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgsettings;
 		private DevExpress.XtraBars.Ribbon.RibbonPageGroup rpgAppearance;
 		private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
-		private DevExpress.XtraBars.Ribbon.RibbonStatusBar ribbonStatusBar1;
-		private DevExpress.XtraBars.BarButtonItem btnLiveUpdate;
-		private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup2;
+		private DevExpress.XtraBars.Ribbon.RibbonStatusBar ribbonStatusBar;
+		private DevExpress.XtraBars.BarStaticItem barStaticItem1;
+		private DevExpress.XtraBars.BarStaticItem barStaticItem2;
+		private DevExpress.XtraBars.BarStaticItem barStaticItem3;
+		private DevExpress.XtraBars.BarStaticItem barStaticItem4;
+		private DevExpress.XtraBars.BarStaticItem barStaticItem5;
+		private DevExpress.XtraBars.BarStaticItem barStaticItem6;
+		private DevExpress.XtraBars.BarStaticItem barStaticItem7;
+		private DevExpress.XtraBars.BarStaticItem barStaticItem8;
+		private DevExpress.XtraBars.Docking2010.DocumentManager documentManager1;
+		private DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView tabbedView1;
+		private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel1;
 		private DevExpress.XtraBars.Navigation.AccordionControl mainMenu;
 		private DevExpress.XtraBars.Navigation.AccordionControlElement mnuNavigationMenu;
 		private DevExpress.XtraBars.Navigation.AccordionControlElement mnuDashboard;
@@ -1156,10 +1235,5 @@
 		private DevExpress.XtraBars.Navigation.AccordionControlElement grpReadingPane;
 		private DevExpress.XtraBars.Navigation.AccordionControlElement dockRight;
 		private DevExpress.XtraBars.Navigation.AccordionControlElement showPendingJobs;
-		private DevExpress.XtraBars.Navigation.AccordionControlSeparator accordionControlSeparator3;
-		private DevExpress.XtraBars.Navigation.AccordionControlElement closeGeneralSettings;
-		private DevExpress.LookAndFeel.DefaultLookAndFeel defaultLookAndFeel1;
-		private DevExpress.XtraBars.Docking2010.DocumentManager documentManager1;
-		private DevExpress.XtraBars.Docking2010.Views.Tabbed.TabbedView tabbedView1;
 	}
 }

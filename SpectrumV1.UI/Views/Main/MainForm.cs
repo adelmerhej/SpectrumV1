@@ -1,7 +1,15 @@
-﻿using DevExpress.XtraBars;
+﻿using DevExpress.LookAndFeel;
+using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using SpectrumV1.Models.Users;
 using SpectrumV1.Properties;
 using SpectrumV1.Utilities;
+using SpectrumV1.Utilities.Interfaces;
+using SpectrumV1.Utilities.Layout;
 using SpectrumV1.Views.Main.Update;
+using SpectrumV1.Views.Users;
+using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SpectrumV1.Views.Main
@@ -34,9 +42,53 @@ namespace SpectrumV1.Views.Main
 
 			_logOut = true;
 		}
+
 		private void MainForm_Load(object sender, System.EventArgs e)
 		{
 			HelperApplication.CheckForUpdate();
+		}
+		
+		private void MainForm_Activated(object sender, EventArgs e)
+		{
+			try
+			{
+				var af = ActiveMdiChild as IFormWithRibbon;
+				if (af == null) return;
+				ribbonMainForm.SelectedPage = ribbonMainForm.MergedPages[af.DefaultPage.Text];
+
+				UpdateStatus();
+			}
+			catch (Exception exception)
+			{
+				Console.WriteLine(exception);
+			}
+		}
+
+		private void MainForm_MdiChildActivate(object sender, EventArgs e)
+		{
+			try
+			{
+				var af = ActiveMdiChild as IFormWithRibbon;
+				if (af == null) return;
+				ribbonMainForm.SelectedPage = ribbonMainForm.MergedPages[af.DefaultPage.Text];
+
+				UpdateStatus();
+			}
+			catch (Exception exception)
+			{
+				Console.WriteLine(exception);
+			}
+		}
+
+		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			var settings = Settings.Default;
+			settings.SkinName = UserLookAndFeel.Default.SkinName;
+			settings.Palette = UserLookAndFeel.Default.ActiveSvgPaletteName;
+			if (!_resetMenu)
+			{
+				LayoutsStyle.SaveLayoutMenu(mainMenu, CurrentUser.UserName);
+			}
 		}
 
 		#region Loading Region
@@ -63,7 +115,15 @@ namespace SpectrumV1.Views.Main
 
 		private void UpdateStatus()
 		{
+			//Get HOST NAME
+			statusHost.Caption = @"Host: " + CurrentUser.HostName;
+			statusDatabase.Caption = @"Database: " + CurrentUser.DatabaseName;
+			statusAppName.Caption = @"App: " + HelperApplication.AssemblyDescription;
+			statusVersion.Caption = Resources.VERSION + @" " + HelperApplication.AssemblyVersion;
 
+			statusCompanyName.Caption = Resources.COMPANY_NAME + @" " + CurrentUser.CompanyName;
+			statusUserName.Caption = Resources.USER_NAME + @" " + CurrentUser.UserName;
+			statusDate.Caption = Resources.TODAY + @" " + DateTime.Now.ToLongDateString();
 		}
 
 		#endregion
@@ -118,7 +178,36 @@ namespace SpectrumV1.Views.Main
 			}
 		}
 
+
 		#endregion
+
+		private void OpenForm<T>(T myForm, bool isDialog = false) where T : Form
+		{
+			try
+			{
+				if (!Application.OpenForms.OfType<T>().Any())
+				{
+					if (!isDialog) myForm.MdiParent = this;
+
+					myForm.Show();
+				}
+				else
+				{
+					Application.OpenForms[myForm.Name]?.Focus();
+					//myForm.Focus();
+				}
+			}
+			catch (Exception ex)
+			{
+				XtraMessageBox.Show(ex.Message, "Main OpenForm Error Message!", MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+			}
+		}
+
+		private void mnuUsersList_Click(object sender, System.EventArgs e)
+		{
+			OpenForm(new UsersListForm());
+		}
 
 
 	}
