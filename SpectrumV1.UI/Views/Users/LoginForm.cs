@@ -27,7 +27,7 @@ namespace SpectrumV1.Views.Users
 		private CompanyRepository _companyRepository = new CompanyRepository();
 		private BranchRepository _branchRepository = new BranchRepository();
 
-		//private readonly UserRepository _userRepository = new UserRepository();
+		private readonly UserRepository _userRepository = new UserRepository();
 
 		/// <summary>
 		/// User Permission Role
@@ -57,7 +57,7 @@ namespace SpectrumV1.Views.Users
 		{
 			txtUserName.Focus();
 			chkSavePassword.Checked = false;
-			cboCompanies.EditValue = Settings.Default.CompanyId;
+			cboCompanies.EditValue = Settings.Default.CompanyName;
 			if (Settings.Default.SavePassword)
 			{
 				txtUserName.Text = Settings.Default.UserName;
@@ -117,13 +117,6 @@ namespace SpectrumV1.Views.Users
 
 			try
 			{
-				// Resolve selected company context (optional future logic)
-				if (cboCompanies.EditValue != null)
-				{
-					CurrentUser.Company = cboCompanies.EditValue.ToString();
-					CurrentUser.CompanyName = cboCompanies.Text;
-				}
-
 				using (var userRepository = new UserRepository())
 				{
 					var loginService = new SpectrumV1.BusinessLogic.Users.LoginService(userRepository);
@@ -137,9 +130,35 @@ namespace SpectrumV1.Views.Users
 						return;
 					}
 
+					//If user is found, and/or (FirstTimeAccess and must change password on next logon) 
+					// open CreateNewPasswordForm and force user to change password
+					if (user.ChangePasswordNextLogon)
+					{
+						using (var changePasswordForm = new CreateNewPasswordForm(user))
+						{
+							changePasswordForm.SendChangedPassword += RcvChangedPassword;
+							var result = changePasswordForm.ShowDialog();
+
+							if (result != DialogResult.OK)
+							{
+								XtraMessageBox.Show(@"You must change your password before you can continue.", 
+									@"Change Password Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+								return;
+							}
+						}
+					}
+
+
 					// Set current user context
 					CurrentUser.UserName = user.Username;
 					CurrentUser.WorkingYear = DateTime.Now.Year;
+
+					// Resolve selected company context (optional future logic)
+					if (cboCompanies.EditValue != null)
+					{
+						CurrentUser.Company = cboCompanies.EditValue.ToString();
+						CurrentUser.CompanyName = cboCompanies.Text;
+					}
 
 					// Persist remembered credentials
 					CheckAndSaveSettings();
@@ -228,11 +247,11 @@ namespace SpectrumV1.Views.Users
 			}
 
 			Settings.Default.SavePassword = chkSavePassword.Checked;
-			Settings.Default.CompanyId = (int)cboCompanies.EditValue;
+			Settings.Default.CompanyName = cboCompanies.EditValue.ToString();
 			Settings.Default.Save();
 		}
 
-		private void lnkChangePassword_Click(object sender, EventArgs e)
+		private async void lnkChangePassword_Click(object sender, EventArgs e)
 		{
 			try
 			{
@@ -253,18 +272,18 @@ namespace SpectrumV1.Views.Users
 					cboCompanies.Focus();
 					return;
 				}
-				//var changeUserModel = _userRepository.GetUsersByName(txtUserName.Text.Trim());
-				//if (txtUserName.Text == string.Empty || changeUserModel == null)
-				//{
-				//	XtraMessageBox.Show($"Invalid username [ {txtUserName.Text} ].", "Change Password",
-				//		MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				//	return;
-				//}
+				var changeUserModel = await _userRepository.GetUserByNameAsync(txtUserName.Text.Trim());
+				if (txtUserName.Text == string.Empty || changeUserModel == null)
+				{
+					XtraMessageBox.Show($"Invalid username [ {txtUserName.Text} ].", "Change Password",
+						MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					return;
+				}
 
-				//ChangePasswordForm _frm = new ChangePasswordForm(changeUserModel);
-				//_frm.SendChangedPassword += RcvChangedPassword;
+				ChangePasswordForm _frm = new ChangePasswordForm(changeUserModel);
+				_frm.SendChangedPassword += RcvChangedPassword;
 
-				//_frm.ShowDialog();
+				_frm.ShowDialog();
 			}
 			catch (Exception exception)
 			{

@@ -1,5 +1,4 @@
 ﻿using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Controls;
 using Microsoft.AspNet.Identity;
 using SpectrumV1.DataLayers.Users;
 using SpectrumV1.Models.Users;
@@ -10,14 +9,14 @@ using System.Windows.Forms;
 
 namespace SpectrumV1.Views.Users
 {
-	public partial class CreateNewPasswordForm : XtraForm
+	public partial class ChangePasswordForm : XtraForm
 	{
 		private UserModel _userModel = new UserModel();
 		private readonly UserRepository _userRepository = new UserRepository();
 
 		public event EventHandler SendChangedPassword;
 
-		public CreateNewPasswordForm(UserModel model)
+		public ChangePasswordForm(UserModel model)
 		{
 			InitializeComponent();
 
@@ -31,12 +30,9 @@ namespace SpectrumV1.Views.Users
 
 		private void InitializeBindings()
 		{
-
 		}
-
 		private void WireUpBindings()
 		{
-
 		}
 
 		private void ApplyDefaults()
@@ -46,40 +42,11 @@ namespace SpectrumV1.Views.Users
 
 		private void ApplyPermissions()
 		{
-
 		}
 
-		private async void btnSave_Click(object sender, EventArgs e)
+		private void btnSave_Click(object sender, System.EventArgs e)
 		{
 			if (!ValidateForm()) return;
-
-			try
-			{
-				SystemUtilities.PasswordHasher = new PasswordHasher();
-
-				_userModel.PasswordHash = SystemUtilities.PasswordHasher.HashPassword(txtNewPassword.Text);
-				_userModel.ChangePasswordNextLogon = false;
-				_userModel.FirstTimeAccess = false;
-
-				var updateResult = await _userRepository.UpdateUserAsync(_userModel);
-
-				if (!updateResult)
-				{
-					throw new Exception("Error while changing password\n- Contact your system administrator.");
-				}
-
-				XtraMessageBox.Show("Password changed!",
-					"Password notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-				SendChangedPassword(_userModel, EventArgs.Empty);
-				DialogResult = DialogResult.OK;
-				Close();
-			}
-			catch (Exception exception)
-			{
-				XtraMessageBox.Show(exception.Message, "Change Password",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
 		}
 
 		private void btnCancel_Click(object sender, System.EventArgs e)
@@ -109,6 +76,13 @@ namespace SpectrumV1.Views.Users
 				txtNewPassword.Focus();
 			}
 
+			if (txtOldPassword.Text == "")
+			{
+				messageNumber += 1;
+				validateMessage.Append("\n- Old Password cannot be empty.");
+				validateReturnValue = false;
+				txtOldPassword.Focus();
+			}
 
 			if (txtUsername.Text == "")
 			{
@@ -116,6 +90,14 @@ namespace SpectrumV1.Views.Users
 				validateMessage.Append("\n- Username cannot be empty.");
 				validateReturnValue = false;
 				txtUsername.Focus();
+			}
+
+			if (txtNewPassword.Text == txtOldPassword.Text)
+			{
+				messageNumber += 1;
+				validateMessage.Append("\n- New Password and old Password cannot be the same.");
+				validateReturnValue = false;
+				txtNewPassword.Focus();
 			}
 
 			if (txtNewPassword.Text != txtConfirmPassword.Text)
@@ -126,6 +108,31 @@ namespace SpectrumV1.Views.Users
 				txtConfirmPassword.Focus();
 			}
 
+			if (txtNewPassword.Text != txtConfirmPassword.Text)
+			{
+				messageNumber += 1;
+				validateMessage.Append("\n- New Password and Confirm Password do not match.");
+				validateReturnValue = false;
+				txtConfirmPassword.Focus();
+			}
+
+			#region Check username in database
+			//_userModel = _userRepository.GetUsersByName(_userModel.Username, _isProtected);
+
+			SystemUtilities.PasswordHasher = new PasswordHasher();
+			var passwordVerificationResult =
+				SystemUtilities.PasswordHasher.VerifyHashedPassword(_userModel.PasswordHash, txtOldPassword.Text);
+
+			if (_userModel == null || _userModel.Username != txtUsername.Text ||
+				passwordVerificationResult == PasswordVerificationResult.Failed)
+			{
+				messageNumber += 1;
+				validateMessage.Append("\n- User Name or password are not correct.");
+				validateReturnValue = false;
+				txtUsername.Focus();
+			}
+
+			#endregion
 
 			if (!validateReturnValue)
 			{
@@ -136,30 +143,6 @@ namespace SpectrumV1.Views.Users
 			}
 
 			return validateReturnValue;
-		}
-
-		private void txtNewPassword_ButtonClick(object sender, ButtonPressedEventArgs e)
-		{
-			ButtonEdit edit = sender as ButtonEdit;
-			if (edit != null) edit.Properties.PasswordChar = (edit.Properties.PasswordChar == '*') ? '\0' : '*';
-		}
-
-		private void txtNewPassword_MouseLeave(object sender, EventArgs e)
-		{
-			ButtonEdit edit = sender as ButtonEdit;
-			if (edit != null) edit.Properties.PasswordChar = edit.Properties.PasswordChar = '*';
-		}
-
-		private void txtConfirmPassword_ButtonClick(object sender, ButtonPressedEventArgs e)
-		{
-			ButtonEdit edit = sender as ButtonEdit;
-			if (edit != null) edit.Properties.PasswordChar = (edit.Properties.PasswordChar == '*') ? '\0' : '*';
-		}
-
-		private void txtConfirmPassword_MouseLeave(object sender, EventArgs e)
-		{
-			ButtonEdit edit = sender as ButtonEdit;
-			if (edit != null) edit.Properties.PasswordChar = edit.Properties.PasswordChar = '*';
 		}
 	}
 }

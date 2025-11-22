@@ -73,18 +73,6 @@ namespace SpectrumV1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int CompanyId {
-            get {
-                return ((int)(this["CompanyId"]));
-            }
-            set {
-                this["CompanyId"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("EN")]
         public string CurrentLanguage {
             get {
@@ -181,7 +169,7 @@ namespace SpectrumV1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Vision^")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string CompanyName {
             get {
                 return ((string)(this["CompanyName"]));
