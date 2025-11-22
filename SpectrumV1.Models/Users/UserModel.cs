@@ -20,6 +20,8 @@ namespace SpectrumV1.Models.Users
 		public List<string> Roles { get; set; } = new List<string>();
 
 		public bool IsLockedOut { get; set; } = false;
+		public bool ChangePasswordNextLogon { get; set; } = true;
+		public bool FirstTimeAccess { get; set; } = true;
 
 	}
 }

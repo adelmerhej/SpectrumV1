@@ -1,7 +1,9 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNet.Identity;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using SpectrumV1.Models.Administration.Connections;
 using SpectrumV1.Models.Users;
+using SpectrumV1.Utilities.Common;
 using SpectrumV1.Utilities.Enums;
 using System;
 using System.Collections.Generic;
@@ -290,13 +292,16 @@ namespace SpectrumV1.DataLayers.DataAccess.Types
 					Console.WriteLine("Users collection is empty. Inserting default 'admin' user.");
 
 					// Create the default admin user document
+					SystemUtilities.PasswordHasher = new PasswordHasher();
+					var temporaryAdminPassword = SystemUtilities.PasswordHasher.HashPassword("admin");
+
 					var adminUser = new UserModel
 					{
 						Username = "admin",
 						Email = "admin@spectrum-lb.com",
-						PasswordHash = null, // Will be set/change on first login or via password setup
+						PasswordHash = temporaryAdminPassword,
 						SecurityStamp = Guid.NewGuid().ToString(),
-						Roles = new List<string> { "admin" }, // Assign the admin role
+						Roles = new List<string> { "admin" },
 						IsLockedOut = false,
 						CreatedBy = "admin",
 						CreatedAt = DateTime.UtcNow
